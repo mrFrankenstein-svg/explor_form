@@ -13,8 +13,6 @@ using System.IO; //добавить!
 
 namespace WindowsFormsApp1
 {
-
-
     public partial class Form1 : Form
     {
         Process srartProg;
