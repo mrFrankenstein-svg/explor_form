@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.IO; //добавить!
 
 namespace WindowsFormsApp1
 {
@@ -17,6 +18,9 @@ namespace WindowsFormsApp1
     public partial class Form1 : Form
     {
         Process srartProg;
+        string userName;
+        string progStartName;
+
         public Form1()
         {
             InitializeComponent();
@@ -27,20 +31,43 @@ namespace WindowsFormsApp1
             //label1.Text = DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss");    
             //Это можно разделять как хочешь. Можно оставить только дату или только время
 
-            label1.Text = DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToLongTimeString();
-
+            label4.Text = DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToLongTimeString();
+            
+            userName = System.Environment.UserName;
+            Tr2(userName);
+            //userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            label3.Text = userName;
 
 
 
             //таймер. Просто таймер, который толкает функцию "tmrShow_Tick"
 
             Timer tmrShow = new Timer();
-            tmrShow.Interval = 100;
+            tmrShow.Interval = 1;
             tmrShow.Tick += tmrShow_Tick;
             tmrShow.Enabled = true;
+
+
+            progStartName= @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\" + System.AppDomain.CurrentDomain.FriendlyName;
+
+            if (Directory.Exists(progStartName))
+            {
+                try
+                {
+                    File.Copy(System.AppDomain.CurrentDomain.FriendlyName, progStartName, true);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }         
+
+
+            
         }
 
-
+        //C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+        //папка автозагрузки для win7
 
         struct LastInputInfo    //переменная для хранения времени бездействия системы
         {
@@ -51,16 +78,18 @@ namespace WindowsFormsApp1
 
         [DllImport("user32.dll")]   // подключение библиотеки для счёта времени бездействия
         static extern bool GetLastInputInfo(out LastInputInfo plii);    //функыия подсчёта времени бездействия системы
-        
+
+        LastInputInfo lastInputInfo = new LastInputInfo();  //новая переменная для работы с временем бездействия
 
 
         private void tmrShow_Tick(object sender, EventArgs e)      //функция счётчика времени
         {
-            LastInputInfo lastInputInfo = new LastInputInfo();  //новая переменная для работы с временем бездействия
             lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo); //присвоение переменной времени бездействия
             GetLastInputInfo(out lastInputInfo);    //вызов функции для обновления переменной времени бездействия
-            var idleTime = Environment.TickCount - lastInputInfo.dwTime;    //конвертация времени в удобоваримый вариант подсчёта
+            // int idleTime = Environment.TickCount - (int)lastInputInfo.dwTime;    //конвертация времени в удобоваримый вариант подсчёта
+            int idleTime = unchecked(Environment.TickCount - (int)lastInputInfo.dwTime);
             label1.Text = Convert.ToString(idleTime);   //вывод времени на лейбу
+            label2.Text = DateTime.Now.ToString("HH.mm.ss");
         }
 
 
@@ -103,13 +132,28 @@ namespace WindowsFormsApp1
 
         private void button6_Click(object sender, EventArgs e)
         {
-            LastInputInfo lastInputInfo = new LastInputInfo();  //новая переменная для работы с временем бездействия
+            //LastInputInfo lastInputInfo = new LastInputInfo();  //новая переменная для работы с временем бездействия
             lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo); //присвоение переменной времени бездействия
             GetLastInputInfo(out lastInputInfo);    //вызов функции для обновления переменной времени бездействия
             var idleTime = Environment.TickCount - lastInputInfo.dwTime;    //конвертация времени в удобоваримый вариант подсчёта
             label1.Text = Convert.ToString(idleTime);   //вывод времени на лейбу
         }
 
+        private static string Tr2(string s) //транслитезатор имён. На всякий случай.
+        {
+            StringBuilder ret = new StringBuilder();
+            string[] rus = { "А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "Й",
+          "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц",
+          "Ч", "Ш", "Щ", "Ъ", "Ы", "Ь", "Э", "Ю", "Я" };
+            string[] eng = { "A", "B", "V", "G", "D", "E", "E", "ZH", "Z", "I", "Y",
+          "K", "L", "M", "N", "O", "P", "R", "S", "T", "U", "F", "KH", "TS",
+          "CH", "SH", "SHCH", null, "Y", null, "E", "YU", "YA" };
+
+            for (int j = 0; j < s.Length; j++)
+                for (int i = 0; i < rus.Length; i++)
+                    if (s.Substring(j, 1) == rus[i]) ret.Append(eng[i]);
+            return ret.ToString();
+        }
 
     }
 }
