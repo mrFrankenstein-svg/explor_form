@@ -28,7 +28,7 @@ namespace WindowsFormsApp1
 
         private void button2_Click(object sender, EventArgs e)  //стартует процесс
         {
-            srartProg= Process.Start("WindowsFormsApp1.exe");
+            srartProg= Process.Start("explorer.exe");
         }
 
         private void button3_Click(object sender, EventArgs e)  //убивает процесс
