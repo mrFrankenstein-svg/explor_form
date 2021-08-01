@@ -16,7 +16,6 @@ namespace WindowsFormsApp1
     public partial class Form1 : Form
     {
         Process srartProg;
-        string userName;
         string progStartName;
 
         public Form1()
@@ -31,10 +30,10 @@ namespace WindowsFormsApp1
 
             label4.Text = DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToLongTimeString();
             
-            userName = System.Environment.UserName;
-            Tr2(userName);
-            //userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-            label3.Text = userName;
+
+
+
+
 
 
 
@@ -48,15 +47,16 @@ namespace WindowsFormsApp1
 
             progStartName= @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\" + System.AppDomain.CurrentDomain.FriendlyName;
 
-            if (Directory.Exists(progStartName))
+            if (Directory.Exists(progStartName)==false)
             {
                 try
                 {
                     File.Copy(System.AppDomain.CurrentDomain.FriendlyName, progStartName, true);
                 }
+
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                   // MessageBox.Show(ex.Message);
                 }
             }         
 
@@ -84,10 +84,15 @@ namespace WindowsFormsApp1
         {
             lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo); //присвоение переменной времени бездействия
             GetLastInputInfo(out lastInputInfo);    //вызов функции для обновления переменной времени бездействия
+
             // int idleTime = Environment.TickCount - (int)lastInputInfo.dwTime;    //конвертация времени в удобоваримый вариант подсчёта
-            int idleTime = unchecked(Environment.TickCount - (int)lastInputInfo.dwTime);
+
+            int idleTime = unchecked(Environment.TickCount - (int)lastInputInfo.dwTime);    //конвертация времени в удобоваримый вариант подсчёта.
+                                                                                            //Этот вариант лучше, хотя разницы я не знаю
+
             label1.Text = Convert.ToString(idleTime);   //вывод времени на лейбу
             label2.Text = DateTime.Now.ToString("HH.mm.ss");
+
         }
 
 
@@ -139,18 +144,19 @@ namespace WindowsFormsApp1
 
         private static string Tr2(string s) //транслитезатор имён. На всякий случай.
         {
-            StringBuilder ret = new StringBuilder();
-            string[] rus = { "А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "Й",
-          "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц",
-          "Ч", "Ш", "Щ", "Ъ", "Ы", "Ь", "Э", "Ю", "Я" };
-            string[] eng = { "A", "B", "V", "G", "D", "E", "E", "ZH", "Z", "I", "Y",
-          "K", "L", "M", "N", "O", "P", "R", "S", "T", "U", "F", "KH", "TS",
-          "CH", "SH", "SHCH", null, "Y", null, "E", "YU", "YA" };
+            string ret = "";
+            string[] rus = {"А","Б","В","Г","Д","Е","Ё","Ж", "З","И","Й","К","Л","М", "Н",
+          "О","П","Р","С","Т","У","Ф","Х", "Ц", "Ч", "Ш", "Щ",   "Ъ", "Ы","Ь",
+          "Э","Ю", "Я" };
+            string[] eng = {"A","B","V","G","D","E","E","ZH","Z","I","Y","K","L","M","N",
+          "O","P","R","S","T","U","F","KH","TS","CH","SH","SHCH",null,"Y",null,
+          "E","YU","YA"};
 
             for (int j = 0; j < s.Length; j++)
                 for (int i = 0; i < rus.Length; i++)
-                    if (s.Substring(j, 1) == rus[i]) ret.Append(eng[i]);
-            return ret.ToString();
+                    if (s.Substring(j, 1) == rus[i]) ret += eng[i];
+
+            return ret;
         }
 
     }
