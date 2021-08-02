@@ -17,6 +17,8 @@ namespace WindowsFormsApp1
     {
         Process srartProg;
         string progStartName;
+        bool prog_started;
+        string textTranslit;
 
         public Form1()
         {
@@ -30,13 +32,6 @@ namespace WindowsFormsApp1
 
             label4.Text = DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToLongTimeString();
             
-
-
-
-
-
-
-
             //таймер. Просто таймер, который толкает функцию "tmrShow_Tick"
 
             Timer tmrShow = new Timer();
@@ -60,8 +55,6 @@ namespace WindowsFormsApp1
                 }
             }         
 
-
-            
         }
 
         //C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
@@ -89,13 +82,23 @@ namespace WindowsFormsApp1
 
             int idleTime = unchecked(Environment.TickCount - (int)lastInputInfo.dwTime);    //конвертация времени в удобоваримый вариант подсчёта.
                                                                                             //Этот вариант лучше, хотя разницы я не знаю
-
+            idleTime = idleTime / 1000;
+            
             label1.Text = Convert.ToString(idleTime);   //вывод времени на лейбу
-            label2.Text = DateTime.Now.ToString("HH.mm.ss");
+            label2.Text = DateTime.Now.ToString("HH.mm");
+
+            if (idleTime >= 7200000)
+            {
+                prog_started = true;
+                start_prog();
+            }
 
         }
 
-
+        private void start_prog()
+        { 
+            
+        }
 
 
 
@@ -142,13 +145,13 @@ namespace WindowsFormsApp1
             label1.Text = Convert.ToString(idleTime);   //вывод времени на лейбу
         }
 
-        private static string Tr2(string s) //транслитезатор имён. На всякий случай.
+        private void Tr2(string s) //транслитезатор имён. На всякий случай.
         {
             string ret = "";
             string[] rus = {"А","Б","В","Г","Д","Е","Ё","Ж", "З","И","Й","К","Л","М", "Н",
           "О","П","Р","С","Т","У","Ф","Х", "Ц", "Ч", "Ш", "Щ",   "Ъ", "Ы","Ь",
           "Э","Ю", "Я" };
-            string[] eng = {"A","B","V","G","D","E","E","ZH","Z","I","Y","K","L","M","N",
+            string[] eng = {"A1","B","V","G","D","E","E","ZH","Z","I","Y","K","L","M","N",
           "O","P","R","S","T","U","F","KH","TS","CH","SH","SHCH",null,"Y",null,
           "E","YU","YA"};
 
@@ -156,8 +159,16 @@ namespace WindowsFormsApp1
                 for (int i = 0; i < rus.Length; i++)
                     if (s.Substring(j, 1) == rus[i]) ret += eng[i];
 
-            return ret;
+            textTranslit = ret;
         }
 
+        private void button7_Click(object sender, EventArgs e)
+        {
+            textTranslit = textBox1.Text;
+            Tr2(textTranslit);
+            textBox1.Text = textTranslit;
+            label3.Text = textTranslit;
+
+        }
     }
 }
