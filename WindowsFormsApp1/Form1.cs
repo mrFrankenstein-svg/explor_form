@@ -92,15 +92,12 @@ namespace WindowsFormsApp1
                 prog_started = true;
                 start_prog();
             }
-
         }
 
         private void start_prog()
         { 
             
         }
-
-
 
         private void button1_Click(object sender, EventArgs e)  //перезапускает
         {
@@ -133,7 +130,6 @@ namespace WindowsFormsApp1
         private void button5_Click(object sender, EventArgs e)
         {
             label1.Text = DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss");    //можно разделять как хочешь. Можно оставить только дату или только время
-
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -162,12 +158,6 @@ namespace WindowsFormsApp1
                         ret += eng[i];
                         break;
                     }
-                   /*
-                    if (i == rus.Length)
-                    {
-                        ret += s.Substring(j, 1);
-                    }
-                   */
                 }
                 if (ret.Length<=j) 
                 {
@@ -183,7 +173,6 @@ namespace WindowsFormsApp1
             textTranslit = textBox1.Text;
             textBox1.Text = Tr2(textTranslit);
             label3.Text = Tr2(textTranslit);
-
         }
     }
 }
