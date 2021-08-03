@@ -19,6 +19,7 @@ namespace WindowsFormsApp1
         string progStartName;
         bool prog_started;
         string textTranslit;
+        int idleTimeOld;
 
         public Form1()
         {
@@ -93,22 +94,29 @@ namespace WindowsFormsApp1
 
             int idleTime = unchecked(Environment.TickCount - (int)lastInputInfo.dwTime);    //конвертация времени в удобоваримый вариант подсчёта.
                                                                                             //Этот вариант лучше, хотя разницы я не знаю
-            
-            
+
             label1.Text = Convert.ToString(idleTime);   //вывод времени на лейбу
             label2.Text = DateTime.Now.ToString("HH.mm");
 
-            if (idleTime >= 7200000)
+            if (idleTime >= 7200000 && prog_started == false)
             {
                 prog_started = true;
                 start_prog();
             }
-            if (idleTime <= 100)
+            if (idleTime <= 100 && prog_started == true)
             {
                 prog_started = false;
                 close_prog();
             }
-            
+
+            if (checkBox1.Checked == true)
+            {
+                if (idleTime <= 100 && idleTimeOld >= 1000 && prog_started == false)
+                {
+                    printString(DateTime.Now.ToString("HH.mm.ss") + " Last input.", false);
+                }
+                idleTimeOld = idleTime;
+            }
         }
 
         private void start_prog()
@@ -121,7 +129,33 @@ namespace WindowsFormsApp1
         
         }
 
+        private void printString(string s, bool e)
+        {
+            if (e == false)
+            {
+                textBox1.Text = s + Environment.NewLine + textBox1.Text;
+            }
+            else
+            {
+                textBox1.Text = Environment.NewLine + textBox1.Text;
+                textBox1.Text = s + Environment.NewLine + textBox1.Text;
+                textBox1.Text = Environment.NewLine + textBox1.Text;
+            }
 
+        }
+        private void printInt(int s, bool e)
+        {
+            if (e == false)
+            {
+                textBox1.Text = s + Environment.NewLine + textBox1.Text;
+            }
+            else
+            {
+                textBox1.Text = Environment.NewLine + textBox1.Text;
+                textBox1.Text = Convert.ToString(s) + Environment.NewLine + textBox1.Text;
+                textBox1.Text = Environment.NewLine + textBox1.Text;
+            }
+        }
 
 
 
