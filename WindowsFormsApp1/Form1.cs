@@ -26,14 +26,11 @@ namespace WindowsFormsApp1
 
             //узнает дату при включерии
             //можно сделать и так, для компактрости
-            //
-            //label1.Text = DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss");    
+            //*****.Text = DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss");    
             //Это можно разделять как хочешь. Можно оставить только дату или только время
-
             label4.Text = DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToLongTimeString();
-            
-            //таймер. Просто таймер, который толкает функцию "tmrShow_Tick"
 
+            //таймер. Просто таймер, который толкает функцию "tmrShow_Tick"
             Timer tmrShow = new Timer();
             tmrShow.Interval = 1;
             tmrShow.Tick += tmrShow_Tick;
@@ -56,9 +53,18 @@ namespace WindowsFormsApp1
             }         
 
         }
-
         //C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
         //папка автозагрузки для win7
+
+
+
+
+
+
+
+
+
+
 
         struct LastInputInfo    //переменная для хранения времени бездействия системы
         {
@@ -73,16 +79,21 @@ namespace WindowsFormsApp1
         LastInputInfo lastInputInfo = new LastInputInfo();  //новая переменная для работы с временем бездействия
 
 
+
+
+
+
+
+
+
         private void tmrShow_Tick(object sender, EventArgs e)      //функция счётчика времени
         {
             lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo); //присвоение переменной времени бездействия
             GetLastInputInfo(out lastInputInfo);    //вызов функции для обновления переменной времени бездействия
 
-            // int idleTime = Environment.TickCount - (int)lastInputInfo.dwTime;    //конвертация времени в удобоваримый вариант подсчёта
-
             int idleTime = unchecked(Environment.TickCount - (int)lastInputInfo.dwTime);    //конвертация времени в удобоваримый вариант подсчёта.
                                                                                             //Этот вариант лучше, хотя разницы я не знаю
-            idleTime = idleTime / 1000;
+            
             
             label1.Text = Convert.ToString(idleTime);   //вывод времени на лейбу
             label2.Text = DateTime.Now.ToString("HH.mm");
@@ -92,12 +103,35 @@ namespace WindowsFormsApp1
                 prog_started = true;
                 start_prog();
             }
+            if (idleTime <= 100)
+            {
+                prog_started = false;
+                close_prog();
+            }
+            
         }
 
         private void start_prog()
         { 
             
         }
+
+        private void close_prog()
+        { 
+        
+        }
+
+
+
+
+
+
+
+
+
+
+
+
 
         private void button1_Click(object sender, EventArgs e)  //перезапускает
         {
@@ -106,12 +140,20 @@ namespace WindowsFormsApp1
 
         private void button2_Click(object sender, EventArgs e)  //стартует какой-то процесс. Нужно указать имя exe файла
         {
-            srartProg= Process.Start("explorer.exe");
+            if (prog_started == false)
+            {
+                srartProg = Process.Start("explorer.exe");
+                prog_started = true;
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)  //убивает процесс
         {
-            Process.GetProcessById(srartProg.Id).Kill();
+            if (prog_started == true)
+            {
+                Process.GetProcessById(srartProg.Id).Kill();
+                prog_started = false;
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)  //прячет программу
@@ -134,7 +176,6 @@ namespace WindowsFormsApp1
 
         private void button6_Click(object sender, EventArgs e)
         {
-            //LastInputInfo lastInputInfo = new LastInputInfo();  //новая переменная для работы с временем бездействия
             lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo); //присвоение переменной времени бездействия
             GetLastInputInfo(out lastInputInfo);    //вызов функции для обновления переменной времени бездействия
             var idleTime = Environment.TickCount - lastInputInfo.dwTime;    //конвертация времени в удобоваримый вариант подсчёта
@@ -173,6 +214,7 @@ namespace WindowsFormsApp1
             textTranslit = textBox1.Text;
             textBox1.Text = Tr2(textTranslit);
             label3.Text = Tr2(textTranslit);
+
         }
     }
 }
