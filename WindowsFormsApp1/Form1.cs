@@ -113,7 +113,7 @@ namespace WindowsFormsApp1
             {
                 if (idleTime <= 100 && idleTimeOld >= 1000 && prog_started == false)
                 {
-                    printString(DateTime.Now.ToString("HH.mm.ss") + " Last input.", false);
+                    printString(DateTime.Now.ToString("HH.mm.ss") + " Last input.", true);
                 }
                 idleTimeOld = idleTime;
             }
@@ -137,9 +137,9 @@ namespace WindowsFormsApp1
             }
             else
             {
-                textBox1.Text = Environment.NewLine + textBox1.Text;
+                textBox1.Text = "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯" + Environment.NewLine + textBox1.Text;
                 textBox1.Text = s + Environment.NewLine + textBox1.Text;
-                textBox1.Text = Environment.NewLine + textBox1.Text;
+                textBox1.Text = "_______________" + Environment.NewLine + textBox1.Text;
             }
 
         }
@@ -151,20 +151,11 @@ namespace WindowsFormsApp1
             }
             else
             {
-                textBox1.Text = Environment.NewLine + textBox1.Text;
+                textBox1.Text = "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯" + Environment.NewLine + textBox1.Text;
                 textBox1.Text = Convert.ToString(s) + Environment.NewLine + textBox1.Text;
-                textBox1.Text = Environment.NewLine + textBox1.Text;
+                textBox1.Text = "_______________" + Environment.NewLine + textBox1.Text;
             }
         }
-
-
-
-
-
-
-
-
-
 
 
         private void button1_Click(object sender, EventArgs e)  //перезапускает
@@ -250,5 +241,6 @@ namespace WindowsFormsApp1
             label3.Text = Tr2(textTranslit);
 
         }
+
     }
 }
