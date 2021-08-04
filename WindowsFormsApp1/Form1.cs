@@ -161,6 +161,7 @@ namespace WindowsFormsApp1
         private void button1_Click(object sender, EventArgs e)  //перезапускает
         {
             Application.Restart();
+
         }
 
         private void button2_Click(object sender, EventArgs e)  //стартует какой-то процесс. Нужно указать имя exe файла
