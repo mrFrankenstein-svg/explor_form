@@ -43,6 +43,7 @@ namespace WindowsFormsApp1
             this.button7 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button8 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -89,7 +90,7 @@ namespace WindowsFormsApp1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(241, 191);
+            this.label1.Location = new System.Drawing.Point(241, 225);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 4;
@@ -119,7 +120,7 @@ namespace WindowsFormsApp1
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(104, 222);
+            this.label2.Location = new System.Drawing.Point(104, 256);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(35, 13);
             this.label2.TabIndex = 7;
@@ -129,7 +130,7 @@ namespace WindowsFormsApp1
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(104, 190);
+            this.label3.Location = new System.Drawing.Point(104, 224);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 13);
             this.label3.TabIndex = 8;
@@ -139,7 +140,7 @@ namespace WindowsFormsApp1
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(241, 222);
+            this.label4.Location = new System.Drawing.Point(241, 256);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(35, 13);
             this.label4.TabIndex = 9;
@@ -154,7 +155,7 @@ namespace WindowsFormsApp1
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(223, 146);
+            this.textBox1.Size = new System.Drawing.Size(223, 180);
             this.textBox1.TabIndex = 10;
             // 
             // button7
@@ -186,10 +187,21 @@ namespace WindowsFormsApp1
             this.button8.Text = "Program";
             this.button8.UseVisualStyleBackColor = true;
             // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(13, 246);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(75, 23);
+            this.button9.TabIndex = 14;
+            this.button9.Text = "Change";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(342, 245);
+            this.ClientSize = new System.Drawing.Size(342, 279);
+            this.Controls.Add(this.button9);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button7);
@@ -227,6 +239,7 @@ namespace WindowsFormsApp1
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button9;
     }
 }
 

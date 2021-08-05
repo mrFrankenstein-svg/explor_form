@@ -20,6 +20,8 @@ namespace WindowsFormsApp1
         bool prog_started;
         string textTranslit;
         int idleTimeOld;
+        string[] text;      //надо для проверки воида private void stringeditor(string file, string chtoishem, string nachtomenyaem)
+                            //нет воида- не надо и это
 
         public Form1()
         {
@@ -54,13 +56,21 @@ namespace WindowsFormsApp1
             }
 
 
-
-
-            ifstream openFile;
-            string ExampleText = BOB;
-            openFile("accounts.txt");
-            openFile >> ExampleText;
-            openFile.replace(Example, "Hello");
+            /*
+            if (File.Exists(file))
+            {
+                Encoding enc = Encoding.GetEncoding(1251);
+                string[] text = File.ReadAllLines(file, enc);
+                foreach (var str in text)
+                {
+                    if (str.StartsWith(chtoishem) || str.StartsWith(chtoishem.ToLower()))
+                        text[i] = nachtomenyaem;
+                    i = i + 1;
+                    //  str = nachtomenyaem;
+                }
+                File.WriteAllLines(file, text, enc);
+            }
+            */
 
 
 
@@ -70,8 +80,6 @@ namespace WindowsFormsApp1
 
         //имя строчки, которую надо заменить
         //"worker-id": null
-
-
 
 
 
@@ -254,6 +262,39 @@ namespace WindowsFormsApp1
             label3.Text = Tr2(textTranslit);
 
         }
+        private void stringeditor(string file, string chtoishem, string nachtomenyaem)
+        {
+            var i = 0;
+            if (File.Exists(file))
+            {
+                Encoding enc = Encoding.GetEncoding(1251);
+                text = File.ReadAllLines(file, enc);
+                //text = File.ReadAllLines(file);
+                foreach (var str in text)
+                {
+                    if (str.StartsWith(chtoishem) || str.StartsWith(chtoishem.ToLower()))
+                        text[i] = nachtomenyaem;
+                    i = i + 1;
+                    //  str = nachtomenyaem;
+                }
+                File.WriteAllLines(file, text, enc);
+                //File.WriteAllLines(file, text);
+                /*
+                                for (int j = 0; j < 3; j++)
+                                {
+                                    textBox1.Text = textBox1.Text + text[j];
+                                }
+                */
+                textBox1.Text = textBox1.Text + text[3];
+                //foreach (string s in text)
+                //Console.WriteLine(s);
+                //textBox1.Text = textBox1.Text + s;
+            }
+        }
 
+        private void button9_Click(object sender, EventArgs e)
+        {
+            stringeditor(@"C:\Users\Overlord\Desktop\xmrig\config.json", "nullll", "1111");
+        }
     }
 }
