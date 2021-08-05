@@ -51,13 +51,25 @@ namespace WindowsFormsApp1
                 {
                    // MessageBox.Show(ex.Message);
                 }
-            }         
+            }
+
+
+
+
+            ifstream openFile;
+            string ExampleText = BOB;
+            openFile("accounts.txt");
+            openFile >> ExampleText;
+            openFile.replace(Example, "Hello");
+
+
 
         }
         //C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
         //папка автозагрузки для win7
 
-
+        //имя строчки, которую надо заменить
+        //"worker-id": null
 
 
 
