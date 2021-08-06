@@ -292,26 +292,77 @@ namespace WindowsFormsApp1
 
         private void stringeditor2(string file, string chtoishem, string nachtomenyaem)
         {
-            var i = 0;
             if (File.Exists(file))
             {
                 Encoding enc = Encoding.GetEncoding(1251);
                 string[] text = File.ReadAllLines(file, enc);
                 string tex="";
-                
+                int length = chtoishem.Length;
+
                 for (int j = 0; j < text.Length; j++)
                 {
-                    tex = tex + text[j];
+                    //tex = tex + text[j];
+
+                    for (int n = 0; n < text[j].Length;)
+                    {
+                        if (text[j].Length - n >= length)
+                        {
+                            if (text[j].Substring(n, length) == chtoishem)
+                            {
+                                tex += nachtomenyaem;
+                                n += nachtomenyaem.Length;
+                            }
+                            else
+                            {
+                                tex += text[j].Substring(n, 1);
+                                n++;
+                            }
+                        }
+                        else
+                        {
+                            tex += text[j].Substring(n, 1);
+                            n++;
+                        }
+                    }
+                    text[j] = tex;
+                    tex = "";
+
                     //textBox1.Text = tex;
                     //textBox1.Text = textBox1.Text + text[j];
                 }
-                /*
+
+               /* for(int n=0; n<tex.Length;)
+                {
+                    if (tex.Length - n >= length)
+                    {
+                        if (tex.Substring(n, length) == chtoishem)
+                        {
+                            tex2 += nachtomenyaem;
+                            n += nachtomenyaem.Length;
+                        }
+                        else
+                        {
+                            tex2 += tex.Substring(n, 1);
+                            n++;
+                        }
+                    }
+                    else
+                    {
+                        tex2 += tex.Substring(n, 1);
+                        n++;
+                    }
+                }
+               */
+
+                //textBox1.Text = tex2;
+                
                 foreach (string s in text)
                 tex = tex + s;
                 textBox1.Text = tex;
-                */
 
 
+
+                File.WriteAllLines(file, text, enc);
 
             }
         }
@@ -319,7 +370,7 @@ namespace WindowsFormsApp1
         private void button9_Click(object sender, EventArgs e)
         {
             //oWerlord для ноутбука, oVerlord для компа
-            stringeditor2(@"C:\Users\Owerlord\Desktop\xmrig\config.json", "nullll", "1111");
+            stringeditor2(@"C:\Users\Owerlord\Desktop\xmrig\config.json", "rigNameeeeeeeeeee", "1111");
         }
     }
 }
