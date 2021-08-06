@@ -20,8 +20,6 @@ namespace WindowsFormsApp1
         bool prog_started;
         string textTranslit;
         int idleTimeOld;
-        string[] text;      //надо для проверки воида private void stringeditor(string file, string chtoishem, string nachtomenyaem)
-                            //нет воида- не надо и это
 
         public Form1()
         {
@@ -268,7 +266,7 @@ namespace WindowsFormsApp1
             if (File.Exists(file))
             {
                 Encoding enc = Encoding.GetEncoding(1251);
-                text = File.ReadAllLines(file, enc);
+                string[] text = File.ReadAllLines(file, enc);
                 //text = File.ReadAllLines(file);
                 foreach (var str in text)
                 {
@@ -292,9 +290,36 @@ namespace WindowsFormsApp1
             }
         }
 
+        private void stringeditor2(string file, string chtoishem, string nachtomenyaem)
+        {
+            var i = 0;
+            if (File.Exists(file))
+            {
+                Encoding enc = Encoding.GetEncoding(1251);
+                string[] text = File.ReadAllLines(file, enc);
+                string tex="";
+                
+                for (int j = 0; j < text.Length; j++)
+                {
+                    tex = tex + text[j];
+                    //textBox1.Text = tex;
+                    //textBox1.Text = textBox1.Text + text[j];
+                }
+                /*
+                foreach (string s in text)
+                tex = tex + s;
+                textBox1.Text = tex;
+                */
+
+
+
+            }
+        }
+
         private void button9_Click(object sender, EventArgs e)
         {
-            stringeditor(@"C:\Users\Overlord\Desktop\xmrig\config.json", "nullll", "1111");
+            //oWerlord для ноутбука, oVerlord для компа
+            stringeditor2(@"C:\Users\Owerlord\Desktop\xmrig\config.json", "nullll", "1111");
         }
     }
 }
