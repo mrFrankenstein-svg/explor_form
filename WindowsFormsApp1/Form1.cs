@@ -28,6 +28,7 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
 
+
             //узнает дату при включерии
             //можно сделать и так, для компактрости
             //*****.Text = DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss");    
