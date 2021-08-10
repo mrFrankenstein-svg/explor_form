@@ -214,6 +214,11 @@ namespace WindowsFormsApp1
             CreateConfig cc = new CreateConfig();
             cc.stringeditor2(@"C:\Users\Owerlord\Desktop\xmrig\config.json", "rigNameeeeeeeeeee", "1111");
         }
-       
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            PowerSetings pow = new PowerSetings();
+            pow.SetSetings();
+        }
     }
 }
