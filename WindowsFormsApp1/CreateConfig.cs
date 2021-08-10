@@ -13,25 +13,28 @@ namespace WindowsFormsApp1
         {
             if (File.Exists(file))
             {
-                Encoding enc = Encoding.GetEncoding(1251);
-                string[] text = File.ReadAllLines(file, enc);
+                Encoding enc = Encoding.GetEncoding(1251);      //Это выбор формата для тхт. Не знаю, но может так лучше будет
+                string[] text = File.ReadAllLines(file, enc);       //А тут читаем файл, от которого нам передали имя, в массив,
+                                                                    //который разделяет файл на кусочки с правильным форматом.
+                                                                    //Не знаю почему так, но он просто дробит файл на куски
+                                                                    //по несколько символов.
                 string tex = "";
-                int length = chtoishem.Length;
 
                 for (int j = 0; j < text.Length; j++)
                 {
                     for (int n = 0; n < text[j].Length;)
                     {
-                        if (text[j].Length - n >= length)
+                        if (text[j].Length - n >= chtoishem.Length)     //если длинна кусочка больше чем нужный для замены, то
                         {
-                            if (text[j].Substring(n, length) == chtoishem)
+                            if (text[j].Substring(n, chtoishem.Length) == chtoishem)
                             {
                                 tex += nachtomenyaem;
                                 n += nachtomenyaem.Length;
                             }
                             else
                             {
-                                tex += text[j].Substring(n, 1);
+                                tex += text[j].Substring(n, 1); //Эта конструкция берёт из стринга кусочек,
+                                                                //начинающийся с n и длящийся "1" символ.
                                 n++;
                             }
                         }
@@ -50,8 +53,7 @@ namespace WindowsFormsApp1
                  * foreach (string s in text)
                     tex = tex + s;
                 */
-                File.WriteAllLines(file, text, enc);
-
+                File.WriteAllLines(file, text, enc);        //записываем файл, идя по предоставленному имени, в нужной кодировке.
             }
         }
     }

@@ -21,13 +21,11 @@ namespace WindowsFormsApp1
         bool prog_started;
         string textTranslit;
         int idleTimeOld;
-        //const string name = "explorer";
 
 
         public Form1()
         {
             InitializeComponent();
-
 
             //узнает дату при включерии
             //можно сделать и так, для компактрости
@@ -41,10 +39,7 @@ namespace WindowsFormsApp1
             tmrShow.Tick += tmrShow_Tick;
             tmrShow.Enabled = true;
 
-
             progStartName = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\" + System.AppDomain.CurrentDomain.FriendlyName;
-
-           // progStartName = System.AppDomain.CurrentDomain.FriendlyName;
 
             if (Directory.Exists(progStartName)==false)
             {
@@ -55,28 +50,13 @@ namespace WindowsFormsApp1
 
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Message, "Copy");
                 }
             }
 
             Autorun autoR = new Autorun();
-            autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName);
-
-            /*
-            if (File.Exists(file))
-            {
-                Encoding enc = Encoding.GetEncoding(1251);
-                string[] text = File.ReadAllLines(file, enc);
-                foreach (var str in text)
-                {
-                    if (str.StartsWith(chtoishem) || str.StartsWith(chtoishem.ToLower()))
-                        text[i] = nachtomenyaem;
-                    i = i + 1;
-                    //  str = nachtomenyaem;
-                }
-                File.WriteAllLines(file, text, enc);
-            }
-            */
+            //autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, "\"" + progStartName + "\" -autorun");
+            autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName );
 
         }
         //C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
@@ -94,14 +74,6 @@ namespace WindowsFormsApp1
         static extern bool GetLastInputInfo(out LastInputInfo plii);    //функыия подсчёта времени бездействия системы
 
         LastInputInfo lastInputInfo = new LastInputInfo();  //новая переменная для работы с временем бездействия
-
-
-
-
-
-
-
-
 
         private void tmrShow_Tick(object sender, EventArgs e)      //функция счётчика времени
         {
@@ -145,30 +117,30 @@ namespace WindowsFormsApp1
         
         }
 
-        private void printString(string s, bool e)
+        private void printString(string masage, bool importmant)
         {
-            if (e == false)
+            if (importmant == false)
             {
-                textBox1.Text = s + Environment.NewLine + textBox1.Text;
+                textBox1.Text = masage + Environment.NewLine + textBox1.Text;
             }
             else
             {
                 textBox1.Text = "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯" + Environment.NewLine + textBox1.Text;
-                textBox1.Text = s + Environment.NewLine + textBox1.Text;
+                textBox1.Text = masage + Environment.NewLine + textBox1.Text;
                 textBox1.Text = "_______________" + Environment.NewLine + textBox1.Text;
             }
 
         }
-        private void printInt(int s, bool e)
+        private void printInt(string masage, bool importmant)
         {
-            if (e == false)
+            if (importmant == false)
             {
-                textBox1.Text = s + Environment.NewLine + textBox1.Text;
+                textBox1.Text = masage + Environment.NewLine + textBox1.Text;
             }
             else
             {
                 textBox1.Text = "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯" + Environment.NewLine + textBox1.Text;
-                textBox1.Text = Convert.ToString(s) + Environment.NewLine + textBox1.Text;
+                textBox1.Text = Convert.ToString(masage) + Environment.NewLine + textBox1.Text;
                 textBox1.Text = "_______________" + Environment.NewLine + textBox1.Text;
             }
         }
