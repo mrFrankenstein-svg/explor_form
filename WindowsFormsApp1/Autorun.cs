@@ -31,9 +31,8 @@ namespace WindowsFormsApp1
                 }
                 reg.Close();
             }
-            catch (Exception ex)
+            catch 
             {
-                MessageBox.Show(ex.Message, "Autorun");
                 return false;
             }
             return true;

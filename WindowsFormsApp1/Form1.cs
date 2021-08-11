@@ -220,5 +220,11 @@ namespace WindowsFormsApp1
             PowerSetings pow = new PowerSetings();
             pow.SetSetings();
         }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            FolderCreate create = new FolderCreate();
+            create.PathCreate(@"C:\Users\Owerlord\Desktop\112211");
+        }
     }
 }

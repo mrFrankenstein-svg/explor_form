@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Autorun.cs" />
+    <Compile Include="FolderCreate.cs" />
     <Compile Include="PowerSetings.cs" />
     <Compile Include="CreateConfig.cs" />
     <Compile Include="Translite.cs" />
