@@ -61,9 +61,7 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>XMLFile1.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -79,6 +77,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Autorun.cs" />
+    <Compile Include="CopyDir.cs" />
+    <Compile Include="FileStatus.cs" />
     <Compile Include="FolderCreate.cs" />
     <Compile Include="PowerSetings.cs" />
     <Compile Include="CreateConfig.cs" />

@@ -23,7 +23,7 @@ namespace WindowsFormsApp1
             {
                 if (autorun)
                 {
-                    reg.SetValue(name, string.Format("\"{0}\"", path));
+                    reg.SetValue(name, string.Format("\"{0}\"", path+ @"\" +name));
                 }
                 else
                 {

