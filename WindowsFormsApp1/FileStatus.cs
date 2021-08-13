@@ -35,8 +35,6 @@ namespace WindowsFormsApp1
         }
         public void restart()
         {
-            string path = Environment.CurrentDirectory;
-            File.Create(path + "/restart.txt");
             Application.Restart();
         }
     }
