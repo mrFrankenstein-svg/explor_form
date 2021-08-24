@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.IO;
 
 namespace WindowsFormsApp1
 {
@@ -13,7 +14,7 @@ namespace WindowsFormsApp1
         string[] jobs = { "disk-timeout-ac", "disk-timeout-dc" , "standby-timeout-ac", "standby-timeout-dc",
             "hibernate-timeout-ac", "hibernate-timeout-dc" };
 
-        public void SetSetings()
+        public void SetSetings(string path)
         {
             Process p = new Process();
             p.StartInfo.UseShellExecute = false;
@@ -27,6 +28,8 @@ namespace WindowsFormsApp1
                 p.Start();
                 i++;
             }
+
+            File.Create(path + @"\setings\power.txt");
         }
     }
 }

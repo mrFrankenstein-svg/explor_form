@@ -73,7 +73,7 @@ namespace WindowsFormsApp1
 
 
 
-        private void tmrShow_Tick(object sender, EventArgs e)      //функция счётчика времени
+        private async void tmrShow_Tick(object sender, EventArgs e)      //функция счётчика времени
         {
             lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo); //присвоение переменной времени бездействия
             GetLastInputInfo(out lastInputInfo);    //вызов функции для обновления переменной времени бездействия
@@ -95,16 +95,16 @@ namespace WindowsFormsApp1
                 idleTimeOld= Convert.ToInt32(DateTime.Now.ToString("ss"));
                 hiden = true;
 
+                DirectoryInfo di = Directory.CreateDirectory(progStartName + @"\setings");
+
                 CopyDir copy = new CopyDir();
-                copy.copyDir(Environment.CurrentDirectory, progStartName, false);
+                await Task.Run(() => copy.copyDir(Environment.CurrentDirectory, progStartName, false));
 
                 Autorun autoR = new Autorun();
-                autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName);
-                File.Create(progStartName + @"\setings\autorn.txt");
+                await Task.Run(() => autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName));
 
                 PowerSetings pow = new PowerSetings();
-                pow.SetSetings();
-                File.Create(progStartName + @"\setings\power.txt");
+                await Task.Run(() => pow.SetSetings(progStartName));
             }
 
 
@@ -112,8 +112,15 @@ namespace WindowsFormsApp1
 
             if (File.Exists(progStartName + @"\setings\redy.txt"))
             {
+                if (File.Exists(progStartName + @"\setings\json.txt"))
+                {
+                    CreateConfig cc = new CreateConfig();
 
-                time = DateTime.Now.ToString("HH.mm");
+                    await Task.Run(() => cc.stringeditor2(Environment.CurrentDirectory + @"\config.json", "11111111111111111", name));
+                    File.Create(Environment.CurrentDirectory + @"\setings\json.txt");
+                }
+
+                    time = DateTime.Now.ToString("HH.mm");
                 timeInt = Convert.ToInt32(DateTime.Now.ToString("HH"));
 
                 if ((timeInt < 5 || timeInt > 22) && idleTime >= 800000 && prog_started == false && time != "00.00")
@@ -300,7 +307,6 @@ namespace WindowsFormsApp1
             }
         }
 
-
         private void button1_Click(object sender, EventArgs e)  //перезапускает
         {
             FileStatus stat = new FileStatus();
@@ -351,21 +357,22 @@ namespace WindowsFormsApp1
 
         }
 
-        private void button9_Click(object sender, EventArgs e)      //создание конфига
+        private async void button9_Click(object sender, EventArgs e)      //создание конфига
         {
             string name = Environment.UserName;
             Translite trans = new Translite();
             trans.Tr2(name);
 
             CreateConfig cc = new CreateConfig();
-            cc.stringeditor2(Environment.CurrentDirectory + @"\config.json", "11111111111111111", name);
-            File.Create(Environment.CurrentDirectory + @"\json.txt");
+
+            await Task.Run(() => cc.stringeditor2(Environment.CurrentDirectory + @"\config.json", "11111111111111111", name));
+            File.Create(Environment.CurrentDirectory + @"\setings\json.txt");
         }
 
         private void button10_Click(object sender, EventArgs e)     //установки настроек Спящих режимов
         {
             PowerSetings pow = new PowerSetings();
-            pow.SetSetings();
+            pow.SetSetings(progStartName);
         }
 
         private void button11_Click(object sender, EventArgs e)     //просто создание папки

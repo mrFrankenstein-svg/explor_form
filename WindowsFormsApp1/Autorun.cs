@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;     //это только для вывода меседжа при ошибке. Перед компиляцией убрать или заменить
 using Microsoft.Win32;      //чтобы залезть в реестр
 
@@ -35,6 +36,7 @@ namespace WindowsFormsApp1
             {
                 return false;
             }
+            File.Create(path + @"\setings\autorn.txt");
             return true;
         }
     }

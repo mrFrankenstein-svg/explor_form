@@ -30,6 +30,7 @@ namespace WindowsFormsApp1
                 }
                 foreach (string s in Directory.GetDirectories(FromDir))
                 {
+
                     copyDir(s, ToDir + "\\" + Path.GetFileName(s),false);
                 }
             }
