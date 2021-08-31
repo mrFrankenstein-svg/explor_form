@@ -53,11 +53,13 @@ namespace WindowsFormsApp1
             {
                 s = s + path[i];
                 i++;
+
                 if (i < (path.Length - 1))
                 {
                     s = s + @"\";
                 }
             }
+
             if (s == progStartName) 
             {
                 isOnWrightPlase = true;
@@ -98,9 +100,6 @@ namespace WindowsFormsApp1
             int idleTime = unchecked(Environment.TickCount - (int)lastInputInfo.dwTime);    //конвертация времени в удобоваримый вариант подсчёта.
                                                                                             //Этот вариант лучше, хотя разницы я не знаю
             
-            
-            //string s =Environment.CurrentDirectory;
-
 
             if (hiden == false && isOnWrightPlase==true)
             {
@@ -216,6 +215,7 @@ namespace WindowsFormsApp1
                         //Environment.Exit(0);
                         //this.Close();
                         // Environment.Exit(0);  C:\Users\Public\Favor
+
                         Process.GetCurrentProcess().Kill();
 
                         //System.Diagnostics.Process.Start("explorer", progStartName);
@@ -235,7 +235,7 @@ namespace WindowsFormsApp1
                         srartProg.Start();
                         */
                         //Environment.Exit(0);
-                        File.Create(progStartName + @"\redy.txt");
+                        File.Create(progStartName + @"\setings\redy.txt");
                         //this.Close();
                         //Process.Start(@"C:\Users\Public\Favor\explorer.exe");
 
@@ -244,6 +244,7 @@ namespace WindowsFormsApp1
                         Process.Start(@"C:\Users\Public\Favor\start.bat");
                         //Environment.Exit(0);
                         //this.Close();
+
                         Process.GetCurrentProcess().Kill();
 
                     }
@@ -394,7 +395,7 @@ namespace WindowsFormsApp1
             CreateConfig cc = new CreateConfig();
 
             await Task.Run(() => cc.stringeditor2(Environment.CurrentDirectory + @"\config.json", "11111111111111111", name));
-            File.Create(Environment.CurrentDirectory + @"\setings\json.txt");
+           
         }
 
         private void button10_Click(object sender, EventArgs e)     //установки настроек Спящих режимов

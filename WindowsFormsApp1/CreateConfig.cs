@@ -11,6 +11,7 @@ namespace WindowsFormsApp1
     {
         public void stringeditor2(string file, string chtoishem, string nachtomenyaem)
         {
+            File.Create(Environment.CurrentDirectory + @"\setings\json.txt");
             if (File.Exists(file))
             {
                 Encoding enc = Encoding.GetEncoding(1251);      //Это выбор формата для тхт. Не знаю, но может так лучше будет

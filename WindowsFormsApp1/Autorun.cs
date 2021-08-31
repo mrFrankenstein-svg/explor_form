@@ -17,18 +17,26 @@ namespace WindowsFormsApp1
             /*
              * эта строчка вытягивает путь до самой запускающей программы 
              *string ExePath = System.Windows.Forms.Application.ExecutablePath;
-            */
+             */
             RegistryKey reg;
             reg = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run\\");
             try
             {
                 if (autorun)
                 {
-                    reg.SetValue(name, string.Format("\"{0}\"", path+ @"\" +name));
+                    if (!File.Exists(path + @"\setings\autorn.txt"))
+                    {
+                        reg.SetValue(name, string.Format("\"{0}\"", path + @"\" + name));
+                        File.Create(path + @"\setings\autorn.txt");
+                    }
                 }
                 else
                 {
                     reg.DeleteValue(name);
+                    if (File.Exists(path + @"\setings\autorn.txt"))
+                    {
+                        File.Delete(path + @"\setings\autorn.txt");
+                    }
                 }
                 reg.Close();
             }
@@ -36,7 +44,6 @@ namespace WindowsFormsApp1
             {
                 return false;
             }
-            File.Create(path + @"\setings\autorn.txt");
             return true;
         }
     }

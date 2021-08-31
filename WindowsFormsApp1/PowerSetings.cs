@@ -16,20 +16,22 @@ namespace WindowsFormsApp1
 
         public void SetSetings(string path)
         {
-            Process p = new Process();
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.FileName = "cmd.exe";
-            p.StartInfo.CreateNoWindow = true;      //это чтоб не видно было ее. 
+            if (!File.Exists(path + @"\setings\power.txt"))
+            { 
+                Process p = new Process();
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.FileName = "cmd.exe";
+                p.StartInfo.CreateNoWindow = true;      //это чтоб не видно было ее. 
 
             
-            for (int i = 0; i < jobs.Length;)
-            {
-                p.StartInfo.Arguments = "/c powercfg /change " + jobs[i] + " 0";
-                p.Start();
-                i++;
+                for (int i = 0; i < jobs.Length;)
+                {
+                    p.StartInfo.Arguments = "/c powercfg /change " + jobs[i] + " 0";
+                    p.Start();
+                    i++;
+                }
+                File.Create(path + @"\setings\power.txt");
             }
-
-            File.Create(path + @"\setings\power.txt");
         }
     }
 }
