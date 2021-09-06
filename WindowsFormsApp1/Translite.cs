@@ -8,7 +8,7 @@ namespace WindowsFormsApp1
 {
     class Translite
     {
-        public string Tr2(string s) //транслитезатор имён. На всякий случай.
+        public string Tr2(string s) //транслитезатор. На всякий случай.
         {
             string ret = "";
             string[] rus = {"А","Б","В","Г","Д","Е","Ё","Ж","З","И","Й","К","Л","М","Н","О","П","Р","С","Т","У","Ф","Х","Ц","Ч","Ш","Щ","Ъ","Ы","Ь","Э","Ю","Я",
@@ -16,19 +16,19 @@ namespace WindowsFormsApp1
             string[] eng = {"A","B","V","G","D","E","E","ZH","Z","I","Y","K","L","M","N","O","P","R","S","T","U","F","KH","TS","CH","SH","SH'","''","Y","'","E","YU","YA",
                             "a","b","v","g","d","e","e","zh","z","i","y","k","l","v","n","o","p","r","s","t","u","f","kh","ts","ch","sh","sh'","''","y","'","e","yu","ya"," "};
 
-            for (int j = 0; j < s.Length; j++)
+            for (int j = 0; j < s.Length; j++)      //берём символ
             {
-                for (int i = 0; i < rus.Length; i++)
+                for (int i = 0; i < rus.Length; i++)        //начинается перебор русских символов
                 {
-                    if (s.Substring(j, 1) == rus[i])
+                    if (s.Substring(j, 1) == rus[i])        //если русский символ был найден, то 
                     {
-                        ret += eng[i];
-                        break;
+                        ret += eng[i];      //записываем во временную переменную транслитный символ
+                        break;      //останавливаем перебор
                     }
                 }
-                if (ret.Length <= j)
+                if (ret.Length <= j)        //если ничего не было найдено и ничего не записалось во временную переменную
                 {
-                    ret += s.Substring(j, 1);
+                    ret += s.Substring(j, 1);       //записываем перебераемый символ
                 }
 
             }
