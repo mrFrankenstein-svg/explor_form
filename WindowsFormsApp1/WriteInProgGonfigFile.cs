@@ -54,7 +54,7 @@ namespace WindowsFormsApp1
                             {
                                 lineWitchParametr = true;
                                 numberOfLineWitchParametr = i;
-                                break;
+                                break; 
                             }
                             if (j + parameter.Length == readableFile[i].Length)
                             {
