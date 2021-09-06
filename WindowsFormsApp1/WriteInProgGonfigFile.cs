@@ -58,7 +58,7 @@ namespace WindowsFormsApp1
                             }
                             if (j + parameter.Length == readableFile[i].Length)         //если строччка подходит к концу
                             {
-                                break;
+                                break; 
                             }
                         }
                         i++;
