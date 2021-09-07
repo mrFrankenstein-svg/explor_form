@@ -104,7 +104,7 @@ namespace WindowsFormsApp1
             if (hiden == false && isOnWrightPlase==true)
             {
                 hiden = true;
-                Hide();
+                //Hide();
             }
 
             else if (hiden == false && isOnWrightPlase==false)
@@ -437,6 +437,20 @@ namespace WindowsFormsApp1
             Autorun autoR = new Autorun();
             autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName);
             //File.Create(Environment.CurrentDirectory + @"\autorn.txt");
+        }
+
+        private void ReadConfig_Click(object sender, EventArgs e)
+        {
+            WorkInProgConfigFile config = new WorkInProgConfigFile();
+            textBox1.Text= config.GetData(textBox1.Text);
+        }
+
+        private void WrightConfig_Click(object sender, EventArgs e)
+        {
+            WorkInProgConfigFile config = new WorkInProgConfigFile();
+            string[] s = textBox1.Text.Split('!');
+            config.SetData(s[0],s[1]);
+            textBox1.Text = "";
         }
     }
 }

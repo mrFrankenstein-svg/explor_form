@@ -46,6 +46,8 @@ namespace WindowsFormsApp1
             this.button11 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
+            this.ReadConfig = new System.Windows.Forms.Button();
+            this.WrightConfig = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -147,7 +149,7 @@ namespace WindowsFormsApp1
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(231, 238);
+            this.textBox1.Size = new System.Drawing.Size(496, 238);
             this.textBox1.TabIndex = 10;
             // 
             // button7
@@ -220,10 +222,32 @@ namespace WindowsFormsApp1
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
+            // ReadConfig
+            // 
+            this.ReadConfig.Location = new System.Drawing.Point(245, 12);
+            this.ReadConfig.Name = "ReadConfig";
+            this.ReadConfig.Size = new System.Drawing.Size(75, 23);
+            this.ReadConfig.TabIndex = 19;
+            this.ReadConfig.Text = "ReadConfig";
+            this.ReadConfig.UseVisualStyleBackColor = true;
+            this.ReadConfig.Click += new System.EventHandler(this.ReadConfig_Click);
+            // 
+            // WrightConfig
+            // 
+            this.WrightConfig.Location = new System.Drawing.Point(327, 12);
+            this.WrightConfig.Name = "WrightConfig";
+            this.WrightConfig.Size = new System.Drawing.Size(75, 23);
+            this.WrightConfig.TabIndex = 20;
+            this.WrightConfig.Text = "WrightConfig";
+            this.WrightConfig.UseVisualStyleBackColor = true;
+            this.WrightConfig.Click += new System.EventHandler(this.WrightConfig_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(396, 337);
+            this.ClientSize = new System.Drawing.Size(661, 337);
+            this.Controls.Add(this.WrightConfig);
+            this.Controls.Add(this.ReadConfig);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button11);
@@ -267,6 +291,8 @@ namespace WindowsFormsApp1
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button ReadConfig;
+        private System.Windows.Forms.Button WrightConfig;
     }
 }
 
