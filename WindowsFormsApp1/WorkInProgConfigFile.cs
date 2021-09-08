@@ -12,15 +12,18 @@ namespace WindowsFormsApp1
     {
         //все переменные писать тут
 
-        string progConfigDir = Environment.CurrentDirectory + @"\setings\progConfig.txt";
-        string[] readableFile= {""};
+        //string progConfigDir = Environment.CurrentDirectory + @"\setings\progConfig.txt";
+        string progConfigDir = @"C:\Users\Public\Favor\setings\progConfig.txt";
+        //List<string> readableFile;
+        List<string> readableFile = new List<string>();
+        //string[] readableFile = { };
         char separator = ':';
         //bool lineWitchParametr = false;
         //int numberOfLineWitchParametr = 0;
 
         public string GetData(string parameter) 
         {
-            Array.Clear(readableFile,0,readableFile.Length);
+            //Array.Clear(readableFile,0,readableFile.Length);
             int numberOfLine = 0;
             bool match = false;
             string value;
@@ -43,7 +46,7 @@ namespace WindowsFormsApp1
 
         public void SetData(string parameter, string value)
         {
-            Array.Clear(readableFile, 0, readableFile.Length);
+            //Array.Clear(readableFile, 0, readableFile.Length);
             int numberOfLine = 0;
             bool match = false;
 
@@ -62,7 +65,20 @@ namespace WindowsFormsApp1
 
         private void ReadFromFile(out string value, int lineNumber) 
         {
-            string[] s = readableFile[lineNumber].Split(separator);
+            int i = 0;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            lineNumber = i;
+
+            string line = readableFile[lineNumber];
+            string[] s = line.Split(separator);
             value=s[1];            
         }
 
@@ -75,7 +91,7 @@ namespace WindowsFormsApp1
 
                     using (StreamWriter sw = new StreamWriter(progConfigDir, true))     //создаем писателя
                     {
-                        for (int i = 0; i <= readableFile.Length;)      //для каждой строчки в файле
+                        for (int i = 0; i <= readableFile.Count;)      //для каждой строчки в файле
                         {
                             await sw.WriteLineAsync(readableFile[i]);       //пишем строчку в новую строку
                             i++;            //добавляем счётчик строчки
@@ -96,37 +112,34 @@ namespace WindowsFormsApp1
 
 
 
-        private void findMatch(string parameter, out bool lineWitchParametr, out int numberOfLineWitchParametr) //метод ищёт совпадения в прочитанном тексте файла
+        private void findMatch(string parameter,
+                               out bool lineWitchParametr,
+                               out int numberOfLineWitchParametr) //метод ищёт совпадения в прочитанном тексте файла
         {
-            bool matchFinded=false;
-            int lineNumber = 0;
-            for (int i = 0; i < readableFile.Length;)          //для каждой строчки(каждого элемента массива)
+            var list = readableFile.Where(x => x.Contains(parameter));
+            if (list != null)
             {
-                for (int j = 0; j < readableFile[i].Length;)      //берём символ...
+                int lineNumber = 0;
+                bool match=false;
+                foreach (var line in readableFile)
                 {
-                    if (readableFile[i].Substring(j, parameter.Length) == parameter)        //...и ищем совпадения. Если такое значение найдено, то 
+                    if (line.Contains(parameter))
                     {
-                        lineNumber = i;
-                        matchFinded = true;
+                        match = true;
                         break;
                     }
-                    if (j + parameter.Length == readableFile[i].Length) /*если строка подходит к концу и символов осталось ровно столько,
-                                                                         * сколько в передоваемом параметре, то...                                                                                      *                                                                                          * 
-                                                                         */
+                    else
                     {
-                        break;
+                        lineNumber = 0;      //запоминаем строчку с параметром
+                        match = false;       //ставим идентификатор                         
                     }
-                    j++;
+                    lineNumber++;
                 }
-                i++;            //добавляется счётчик для переключения строчки
-            }
-            if (matchFinded == true)          //если совпадение найдёно
-            {
-                numberOfLineWitchParametr = lineNumber;      //запоминаем строчку с параметром
-                lineWitchParametr = true;       //ставим идентификатор 
+                lineWitchParametr = match;
+                numberOfLineWitchParametr = lineNumber;
                 return;
             }
-            else
+            else 
             {
                 numberOfLineWitchParametr = 0;      //запоминаем строчку с параметром
                 lineWitchParametr = false;       //ставим идентификатор 
@@ -145,9 +158,16 @@ namespace WindowsFormsApp1
             if (!File.Exists(progConfigDir))        //если файла нет
             {
                 File.Create(progConfigDir);         //создадим его
-            }
+                readableFile.Add("end");
 
-            if (File.Exists(progConfigDir))         //если есть
+                using (StreamWriter sw = File.AppendText(progConfigDir))
+                {
+                    sw.WriteLine(readableFile[0]);
+                    sw.Close();
+                }
+                
+            }
+            else         //если есть
             {
                 using (StreamReader sr = new StreamReader(progConfigDir))       //создадим читателя
                 {
@@ -157,12 +177,11 @@ namespace WindowsFormsApp1
                         line = await  sr.ReadLineAsync();        //читаем одну линию
                         if (line != null)           //если в линии что-то есть
                         {
-                            Array.Resize(ref readableFile, readableFile.Length + 1);
-                            readableFile[i] = line;         //записываем в масив посторочно
+                            readableFile.Add(line);         //записываем в масив посторочно
                         }
                         else
                         {
-                            //readableFile[i] = "null";
+                            readableFile.Add("end");         //записываем в лист, сто файл кончился
                             break;
                         }
                     }
