@@ -9,14 +9,17 @@ namespace WindowsFormsApp1
 {
     class FolderCreate
     {
-        public void PathCreate(string path)
+        public static void PathCreate(string path, bool hide)
         {
 
-            if (!Directory.Exists(path)) 
-                { 
-                    DirectoryInfo di = Directory.CreateDirectory(path);
-                    di.Attributes = FileAttributes.Directory | FileAttributes.Hidden; 
+            if (!Directory.Exists(path))
+            {
+                DirectoryInfo di = Directory.CreateDirectory(path);
+                if (hide)
+                {
+                    di.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
                 }
+            }
         }
        
     }

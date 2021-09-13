@@ -82,7 +82,7 @@ namespace WindowsFormsApp1
             value=s[1];            
         }
 
-        private async void writeInFile(string parameter, string value, bool newLine, int lineNumber)
+        private void writeInFile(string parameter, string value, bool newLine, int lineNumber)
         {
             if (newLine == true)          //если в тексте есть такой параметр
             {
@@ -93,7 +93,7 @@ namespace WindowsFormsApp1
                     {
                         for (int i = 0; i <= readableFile.Count;)      //для каждой строчки в файле
                         {
-                            await sw.WriteLineAsync(readableFile[i]);       //пишем строчку в новую строку
+                            sw.WriteLine(readableFile[i]);       //пишем строчку в новую строку
                             i++;            //добавляем счётчик строчки
                         }
                         sw.Close();         //закрываем читателя
@@ -104,7 +104,7 @@ namespace WindowsFormsApp1
             {
                 using (StreamWriter sw = new StreamWriter(progConfigDir, true))     //создаем писателя
                 {
-                    await sw.WriteLineAsync(parameter + separator + value);      //дописываем параметр
+                    sw.WriteLine(parameter + separator + value);      //дописываем параметр
                 }
             }
         }
@@ -153,19 +153,22 @@ namespace WindowsFormsApp1
 
 
 
-        private async void ReadFile()
+        private void ReadFile()
         {
             if (!File.Exists(progConfigDir))        //если файла нет
             {
                 File.Create(progConfigDir);         //создадим его
                 readableFile.Add("end");
+                File.WriteAllLines(progConfigDir, readableFile);
 
+                /*
                 using (StreamWriter sw = File.AppendText(progConfigDir))
                 {
                     sw.WriteLine(readableFile[0]);
                     sw.Close();
                 }
-                
+                */
+
             }
             else         //если есть
             {
@@ -174,7 +177,7 @@ namespace WindowsFormsApp1
                     string line;            //обьявим переменную, в которую будем читать линию
                     for (int i = 0; i >= 0; i++)
                     {
-                        line = await  sr.ReadLineAsync();        //читаем одну линию
+                        line = sr.ReadLine();        //читаем одну линию
                         if (line != null)           //если в линии что-то есть
                         {
                             readableFile.Add(line);         //записываем в масив посторочно

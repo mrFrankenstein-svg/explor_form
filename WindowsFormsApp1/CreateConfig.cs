@@ -9,9 +9,12 @@ namespace WindowsFormsApp1
 {
     class CreateConfig
     {
-        public void stringeditor2(string file, string chtoishem, string nachtomenyaem)
+        public static void stringeditor2(string file, string fileDirectory, string chtoishem)
         {
-            File.Create(Environment.CurrentDirectory + @"\setings\json.txt");
+            string name = Environment.UserName;
+            Translite trans = new Translite();
+            trans.Tr2(name);
+
             if (File.Exists(file))
             {
                 Encoding enc = Encoding.GetEncoding(1251);      //Это выбор формата для тхт. Не знаю, но может так лучше будет
@@ -29,8 +32,8 @@ namespace WindowsFormsApp1
                         {
                             if (text[j].Substring(n, chtoishem.Length) == chtoishem)
                             {
-                                tex += nachtomenyaem;
-                                n += nachtomenyaem.Length;
+                                tex += name;
+                                n += name.Length;
                             }
                             else
                             {
@@ -54,7 +57,20 @@ namespace WindowsFormsApp1
                  * foreach (string s in text)
                     tex = tex + s;
                 */
-                File.WriteAllLines(file, text, enc);        //записываем файл, идя по предоставленному имени, в нужной кодировке.
+               
+                /*
+                if (!File.Exists(fileDirectory))
+                {
+                    File.Create(fileDirectory);
+                }
+                */
+                using (StreamWriter fileWrite = new StreamWriter(fileDirectory, true))
+                {
+                    foreach (string s in text)
+                        fileWrite.WriteLine(s);
+                    fileWrite.Close();
+                }
+                //File.WriteAllLines(fileDirectory, text);        //записываем файл, идя по предоставленному имени, в нужной кодировке.
                 
             }
         }

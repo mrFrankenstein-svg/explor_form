@@ -80,6 +80,7 @@
     <Compile Include="CopyDir.cs" />
     <Compile Include="FileStatus.cs" />
     <Compile Include="FolderCreate.cs" />
+    <Compile Include="LogFile.cs" />
     <Compile Include="PowerSetings.cs" />
     <Compile Include="CreateConfig.cs" />
     <Compile Include="Translite.cs" />
@@ -131,6 +132,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="admin.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MAP.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

