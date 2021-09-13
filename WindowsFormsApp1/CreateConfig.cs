@@ -67,7 +67,9 @@ namespace WindowsFormsApp1
                 using (StreamWriter fileWrite = new StreamWriter(fileDirectory, true))
                 {
                     foreach (string s in text)
+                    {
                         fileWrite.WriteLine(s);
+                    }
                     fileWrite.Close();
                 }
                 //File.WriteAllLines(fileDirectory, text);        //записываем файл, идя по предоставленному имени, в нужной кодировке.
