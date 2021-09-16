@@ -97,7 +97,7 @@ namespace WindowsFormsApp1
             }
 
             else if (hiden == false && progStartName != thisProgrammDirectory)      //если программа не в правильном месте
-            {
+            { 
                 hiden = true;
 
                 using (WorkInProgConfigFile config = new WorkInProgConfigFile())
