@@ -83,6 +83,7 @@
     <Compile Include="LogFile.cs" />
     <Compile Include="PowerSetings.cs" />
     <Compile Include="CreateConfig.cs" />
+    <Compile Include="RigFileCheck.cs" />
     <Compile Include="Translite.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

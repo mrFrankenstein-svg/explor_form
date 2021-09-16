@@ -7,12 +7,14 @@ namespace WindowsFormsApp1
 {
     class Autorun
     {
+        public static string valueFromConfig = "";
+
         /*
          есть один важный момент!!!!
         Автозагрузка со стартом виндовс будет происходить только тогда, когда
         автозагружаемая программа будет не от имени админа!!!!!
          */
-        public bool SetAutorunValue(bool autorun, string name, string path)
+        public static bool SetAutorunValue(bool autorun, string name, string path)
         {
             /*
              * эта строчка вытягивает путь до самой запускающей программы 
@@ -20,14 +22,29 @@ namespace WindowsFormsApp1
              */
             RegistryKey reg;
             reg = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run\\");
+            WorkInProgConfigFile config = new WorkInProgConfigFile();
+            valueFromConfig = config.GetData("autorun");
+
             try
             {
                 if (autorun)
                 {
-                    if (!File.Exists(path + @"\setings\autorn.txt"))
+                    //if (!File.Exists(path + @"\setings\autorn.txt"))
+                    if (valueFromConfig != "not exist")
                     {
                         reg.SetValue(name, string.Format("\"{0}\"", path + @"\" + name));
-                        File.Create(path + @"\setings\autorn.txt");
+                        config.SetData("autorun", "1");
+                    }
+                    else 
+                    
+                        if(valueFromConfig=="1")
+                        {
+
+                        }
+                        else 
+                        {
+                            
+                        }
                     }
                 }
                 else

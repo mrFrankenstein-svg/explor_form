@@ -28,7 +28,10 @@ namespace WindowsFormsApp1
                 foreach (string s1 in Directory.GetFiles(FromDir))
                 {
                     string s2 = ToDir + "\\" + Path.GetFileName(s1);
-                    File.Copy(s1, s2) ;
+                    if (!File.Exists(s2))
+                    {
+                        File.Copy(s1, s2);
+                    }
                 }
                 foreach (string s in Directory.GetDirectories(FromDir))
                 {

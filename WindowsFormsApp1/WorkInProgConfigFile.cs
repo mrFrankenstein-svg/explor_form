@@ -12,32 +12,38 @@ namespace WindowsFormsApp1
     {
         //все переменные писать тут
 
-        //string progConfigDir = Environment.CurrentDirectory + @"\setings\progConfig.txt";
-        string progConfigDir = @"C:\Users\Public\Favor\setings\progConfig.txt";
+        string progConfigDir =Form1.thisProgrammDirectory + @"\setings\progConfig.txt";
         //List<string> readableFile;
         List<string> readableFile = new List<string>();
         //string[] readableFile = { };
         char separator = ':';
+        int numberOfLine = 0;
+        bool match = false;
+        string value = "";
+        string[] valueMassive;
         //bool lineWitchParametr = false;
         //int numberOfLineWitchParametr = 0;
 
         public string GetData(string parameter) 
         {
-            //Array.Clear(readableFile,0,readableFile.Length);
-            int numberOfLine = 0;
-            bool match = false;
-            string value;
-
+            value = "";
             ReadFile();
-            findMatch(parameter, out match, out numberOfLine);
+            //findMatch(parameter, out match, out numberOfLine);
+            findMatch(parameter);
             if (match==true)
             {
-                ReadFromFile(out value, numberOfLine);
+                ReadFromFile();
+                readableFile.Clear();
+                numberOfLine = 0;
+                match = false;
                 return value;
             }
             else
             {
-                value = null;
+                value = "not exist";
+                readableFile.Clear();
+                numberOfLine = 0;
+                match = false;
                 return value;
             }
         }
@@ -47,11 +53,10 @@ namespace WindowsFormsApp1
         public void SetData(string parameter, string value)
         {
             //Array.Clear(readableFile, 0, readableFile.Length);
-            int numberOfLine = 0;
-            bool match = false;
 
             ReadFile();
-            findMatch(parameter, out match, out numberOfLine);
+            //findMatch(parameter, out match, out numberOfLine);
+            findMatch(parameter);
             if (match == true)
             {
                 writeInFile(parameter,value,false,numberOfLine);
@@ -60,45 +65,36 @@ namespace WindowsFormsApp1
             {
                 writeInFile(parameter,value,true,numberOfLine);
             }
+            readableFile.Clear();
+            numberOfLine = 0;
+            match = false;
         }
 
 
-        private void ReadFromFile(out string value, int lineNumber) 
+        private void ReadFromFile()
         {
-            int i = 0;
-            i++;
-            i++;
-            i++;
-            i++;
-            i++;
-            i++;
-            i++;
-            i++;
-            i++;
-            lineNumber = i;
-
-            string line = readableFile[lineNumber];
-            string[] s = line.Split(separator);
-            value=s[1];            
+            //string line = readableFile[numberOfLine];
+            valueMassive = readableFile[numberOfLine].Split(separator);
+            value=valueMassive[1];            
         }
 
         private void writeInFile(string parameter, string value, bool newLine, int lineNumber)
         {
-            if (newLine == true)          //если в тексте есть такой параметр
+            if (newLine == false)          //если в тексте есть такой параметр
             {
                     readableFile[lineNumber] = parameter + separator + value;         //замениям значения параметра
-                    File.WriteAllText(progConfigDir, string.Empty);         //очищаем файл конфига
+                    // File.WriteAllText(progConfigDir, string.Empty);         //очищаем файл конфига
+                    File.Delete(progConfigDir);
 
                     using (StreamWriter sw = new StreamWriter(progConfigDir, true))     //создаем писателя
                     {
-                        for (int i = 0; i <= readableFile.Count;)      //для каждой строчки в файле
+                        for (int i = 0; i < readableFile.Count;)      //для каждой строчки в файле
                         {
                             sw.WriteLine(readableFile[i]);       //пишем строчку в новую строку
                             i++;            //добавляем счётчик строчки
                         }
                         sw.Close();         //закрываем читателя
-                    }
-                
+                    }                
             }
             else            //если в тексте нет такой параметр
             {
@@ -112,12 +108,23 @@ namespace WindowsFormsApp1
 
 
 
-        private void findMatch(string parameter,
-                               out bool lineWitchParametr,
-                               out int numberOfLineWitchParametr) //метод ищёт совпадения в прочитанном тексте файла
+        private void findMatch(string parameter) //метод ищёт совпадения в прочитанном тексте файла
         {
-            var list = readableFile.Where(x => x.Contains(parameter));
-            if (list != null)
+            //linqList = (List<string>)readableFile.Where(x => x.Contains(parameter));
+
+            for (int i=0; i<readableFile.Count;)
+            {
+                if(readableFile[i].Contains(parameter))
+                {
+                    match = true;
+                    numberOfLine = i;
+                    break;
+                }
+                i++;
+                numberOfLine = i;
+            }
+            /*
+            if (linqList != null)
             {
                 int lineNumber = 0;
                 bool match=false;
@@ -130,8 +137,7 @@ namespace WindowsFormsApp1
                     }
                     else
                     {
-                        lineNumber = 0;      //запоминаем строчку с параметром
-                        match = false;       //ставим идентификатор                         
+                        lineNumber = 0;      //запоминаем строчку с параметром           
                     }
                     lineNumber++;
                 }
@@ -145,37 +151,31 @@ namespace WindowsFormsApp1
                 lineWitchParametr = false;       //ставим идентификатор 
                 return;
             }
-
+            */
         }
-
-
-
-
-
 
         private void ReadFile()
         {
+            if (!Directory.Exists(Form1.thisProgrammDirectory + @"\setings"))
+            {
+                FolderCreate.PathCreate(Form1.thisProgrammDirectory + @"\setings", false);
+            }
             if (!File.Exists(progConfigDir))        //если файла нет
             {
-                File.Create(progConfigDir);         //создадим его
-                readableFile.Add("end");
-                File.WriteAllLines(progConfigDir, readableFile);
+                readableFile.Add("");
 
-                /*
                 using (StreamWriter sw = File.AppendText(progConfigDir))
                 {
                     sw.WriteLine(readableFile[0]);
                     sw.Close();
                 }
-                */
-
             }
             else         //если есть
             {
                 using (StreamReader sr = new StreamReader(progConfigDir))       //создадим читателя
                 {
-                    string line;            //обьявим переменную, в которую будем читать линию
-                    for (int i = 0; i >= 0; i++)
+                    string line="";            //обьявим переменную, в которую будем читать линию
+                    for (int i = 0; i >= 0; i++)        //бесконечный цыкл, из которого выведет только конец файла
                     {
                         line = sr.ReadLine();        //читаем одну линию
                         if (line != null)           //если в линии что-то есть
@@ -184,7 +184,6 @@ namespace WindowsFormsApp1
                         }
                         else
                         {
-                            readableFile.Add("end");         //записываем в лист, сто файл кончился
                             break;
                         }
                     }

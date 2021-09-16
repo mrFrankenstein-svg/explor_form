@@ -22,6 +22,9 @@ namespace WindowsFormsApp1
         public static string logFilePath;
 
 
+        // WorkInProgConfigFile config = new WorkInProgConfigFile();
+
+
         bool prog_started;
         string textTranslit;
         int idleTimeOld;
@@ -33,7 +36,6 @@ namespace WindowsFormsApp1
         public Form1()          //Инициализация формы
         {
             InitializeComponent();
-
             
             //узнает дату при включерии. можно сделать и так, для компактрости
             //*****.Text = DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss");    
@@ -61,7 +63,8 @@ namespace WindowsFormsApp1
                     }
                 }
             //LogFile l = new LogFile();
-            LogFile.Log("started");
+            LogFile.Log("\n");
+            LogFile.Log("started " + DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss"));
         }
 
         struct LastInputInfo    //переменная для хранения времени бездействия системы
@@ -95,17 +98,27 @@ namespace WindowsFormsApp1
 
             else if (hiden == false && progStartName != thisProgrammDirectory)      //если программа не в правильном месте
             {
-                LogFile.Log("Is not on wright plase.");
-                idleTimeOld = Convert.ToInt32(DateTime.Now.ToString("ss"));
                 hiden = true;
 
+                using (WorkInProgConfigFile config = new WorkInProgConfigFile())
+                {
+                    string result = "start";
+                    config.SetData(result, "1");
+                    //config.GetData(result);
+                    MessageBox.Show(config.GetData("э"));
+                }
 
-                LogFile.Log("Creating setings folder.");
-                DirectoryInfo di = Directory.CreateDirectory(progStartName + @"\setings");
+                LogFile.Log("Programm is not on wright plase.");
+                idleTimeOld = Convert.ToInt32(DateTime.Now.ToString("ss"));
+
+                LogFile.Log("Creating wright program folder.");
+                FolderCreate.PathCreate(progStartName,true);
+
+                LogFile.Log("Creating wright setings folder.");
+                FolderCreate.PathCreate(progStartName + @"\setings",false);
 
                 LogFile.Log("Set autorun setings.");
-                Autorun autoR = new Autorun();
-                await Task.Run(() => autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName));
+                await Task.Run(() => Autorun.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName));
 
                 LogFile.Log("Set power setings.");
                 PowerSetings pow = new PowerSetings();
@@ -114,9 +127,6 @@ namespace WindowsFormsApp1
                 LogFile.Log("Copy program to wright place.");
                 await Task.Run(() => CopyDir.copyDir(Environment.CurrentDirectory, progStartName, true));
             }
-
-
-
 
             if (progStartName != thisProgrammDirectory) //
                                                         //если программа готова
@@ -150,8 +160,11 @@ namespace WindowsFormsApp1
                     close_prog();
                 }
 
+
+
+
                 /*
-                 * это все должно было запускать рестарт программы, но...
+                 * это все должно было запускать рестарт программу, но...
                  * Но надо это всё переписать
                  * 
                 if (time == "00.00" && !File.Exists(thisProgrammDirectory + @"/restart.txt"))
@@ -195,7 +208,7 @@ namespace WindowsFormsApp1
                 timeInt = Convert.ToInt32(DateTime.Now.ToString("ss"));
 
                 // Когда счётчик доходит до конца надо что-то сделать.
-                // Я пока что просто запускаю эту прогу, открываю папку с ней и включаю прогу из нового места
+                // Я пока что просто запускаю эту прогу, включаю прогу из нового места и открываю папку с ней
                 if (idleTimeOld <= 57)
                 {
                     if (idleTimeOld == timeInt-3)
@@ -397,8 +410,8 @@ namespace WindowsFormsApp1
         private void button5_Click(object sender, EventArgs e)
         {
 
-            Autorun autoR = new Autorun();
-            autoR.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName);
+            //Autorun autoR = new Autorun();
+            Autorun.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName);
             //File.Create(Environment.CurrentDirectory + @"\autorn.txt");
         }
 
@@ -417,22 +430,45 @@ namespace WindowsFormsApp1
         }
         private void PrepareToWorck()         // метод, который будет готовить прогу к работе
         {
-            LogFile.Log("PrepareToWorck() started.");
+            LogFile.Log("PrepareToWorck()  started for check rig files.");
             if (!Directory.Exists(rigDirectory))
             {
                 LogFile.Log("Created rig Directory.");
                 //FolderCreate fc = new FolderCreate();
                 FolderCreate.PathCreate(rigDirectory, true);
-            }
 
-            if (!File.Exists(rigDirectory + @"\config.json"))
-            {
                 LogFile.Log("Copied files of rig.");
                 CopyDir.copyDir(thisProgrammDirectory + @"\rig", rigDirectory, false);
 
                 LogFile.Log("Created config file for rig.");
                 CreateConfig.stringeditor2(progStartName + @"\config_exam.json", rigDirectory + @"\config.json",
                     "11111111111111111");
+            }
+            else
+            {
+                //if (!File.Exists(rigDirectory + @"\config.json"))
+                if (!RigFileCheck.check())
+                {
+                    int i = 0;
+                    LogFile.Log("The folder of Rig was checked with an error.");
+                    foreach (string s in Directory.GetFiles(rigDirectory))
+                    {
+                        i++;
+                        File.Delete(s);
+                    }
+                    LogFile.Log("From Rig folder has been deleted " + i +" files.");
+
+                    LogFile.Log("Copied files of Rig.");
+                    CopyDir.copyDir(thisProgrammDirectory + @"\rig", rigDirectory, false);
+
+                    LogFile.Log("Created config file for Rig.");
+                    CreateConfig.stringeditor2(progStartName + @"\config_exam.json", rigDirectory + @"\config.json",
+                        "11111111111111111");
+                }
+                else
+                {
+                    LogFile.Log("The folder of Rig has been checked correctly.");
+                }
             }
         }
     }
