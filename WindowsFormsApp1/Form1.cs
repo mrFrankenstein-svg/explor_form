@@ -100,13 +100,12 @@ namespace WindowsFormsApp1
             { 
                 hiden = true;
 
-                using (WorkInProgConfigFile config = new WorkInProgConfigFile())
-                {
-                    string result = "start";
-                    config.SetData(result, "1");
-                    //config.GetData(result);
-                    MessageBox.Show(config.GetData("э"));
-                }
+                WorkInProgConfigFile config = new WorkInProgConfigFile();
+                string result = "start";
+                config.SetData(result, "1");
+                //config.GetData(result);
+                MessageBox.Show(config.GetData("э"));
+
 
                 LogFile.Log("Programm is not on wright plase.");
                 idleTimeOld = Convert.ToInt32(DateTime.Now.ToString("ss"));

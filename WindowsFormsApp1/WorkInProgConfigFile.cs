@@ -52,8 +52,6 @@ namespace WindowsFormsApp1
 
         public void SetData(string parameter, string value)
         {
-            //Array.Clear(readableFile, 0, readableFile.Length);
-
             ReadFile();
             //findMatch(parameter, out match, out numberOfLine);
             findMatch(parameter);
@@ -123,35 +121,6 @@ namespace WindowsFormsApp1
                 i++;
                 numberOfLine = i;
             }
-            /*
-            if (linqList != null)
-            {
-                int lineNumber = 0;
-                bool match=false;
-                foreach (var line in readableFile)
-                {
-                    if (line.Contains(parameter))
-                    {
-                        match = true;
-                        break;
-                    }
-                    else
-                    {
-                        lineNumber = 0;      //запоминаем строчку с параметром           
-                    }
-                    lineNumber++;
-                }
-                lineWitchParametr = match;
-                numberOfLineWitchParametr = lineNumber;
-                return;
-            }
-            else 
-            {
-                numberOfLineWitchParametr = 0;      //запоминаем строчку с параметром
-                lineWitchParametr = false;       //ставим идентификатор 
-                return;
-            }
-            */
         }
 
         private void ReadFile()
@@ -191,5 +160,6 @@ namespace WindowsFormsApp1
                 }
             }
         }
+
     }
 }
