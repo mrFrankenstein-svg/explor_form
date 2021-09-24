@@ -17,8 +17,8 @@ namespace WindowsFormsApp1
         public static bool SetAutorunValue(bool autorun, string name, string path)
         {
             /*
-             * эта строчка вытягивает путь до самой запускающей программы 
-             *string ExePath = System.Windows.Forms.Application.ExecutablePath;
+             *  эта строчка вытягивает путь до самой запускающей программы
+             *  string ExePath = System.Windows.Forms.Application.ExecutablePath;
              */
             RegistryKey reg;
             reg = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run\\");
@@ -27,20 +27,28 @@ namespace WindowsFormsApp1
 
             try
             {
-                if (autorun)
+                //если функцию нужно добавить в регистр
+                if (autorun)        
                 {
                     //if (!File.Exists(path + @"\setings\autorn.txt"))
-                    if (valueFromConfig != "not exist")
+
+                    //если в файле конфига программы НЕТ значения авторана
+                    if (valueFromConfig != "not exist")     
                     {
+                        //устанавливаем записть в регистр
                         reg.SetValue(name, string.Format("\"{0}\"", path + @"\" + name));
+                        //записываем в файл конфига о прогрессе
                         config.SetData("autorun", "1");
                     }
-                    else 
-                    
+                    //если в файле конфига программы ЕСТЬ значения авторана
+                    else
+                    { 
+                        //если значение =1 (true)
                         if(valueFromConfig=="1")
                         {
 
                         }
+                        //если значение 
                         else 
                         {
                             

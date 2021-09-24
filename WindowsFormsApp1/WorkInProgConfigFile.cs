@@ -16,7 +16,7 @@ namespace WindowsFormsApp1
         //List<string> readableFile;
         List<string> readableFile = new List<string>();
         //string[] readableFile = { };
-        char separator = ':';
+        char separator = '^';
         int numberOfLine = 0;
         bool match = false;
         string value = "";
@@ -112,7 +112,8 @@ namespace WindowsFormsApp1
 
             for (int i=0; i<readableFile.Count;)
             {
-                if(readableFile[i].Contains(parameter))
+                string [] line = readableFile[i].Split(separator);
+                if (line[1]==parameter)
                 {
                     match = true;
                     numberOfLine = i;
