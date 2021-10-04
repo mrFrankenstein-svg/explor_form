@@ -39,7 +39,6 @@ namespace WindowsFormsApp1
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button7 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button9 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
@@ -150,16 +149,6 @@ namespace WindowsFormsApp1
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox1.Size = new System.Drawing.Size(250, 240);
             this.textBox1.TabIndex = 10;
-            // 
-            // button7
-            // 
-            this.button7.Location = new System.Drawing.Point(12, 99);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(135, 23);
-            this.button7.TabIndex = 11;
-            this.button7.Text = "Translit";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // checkBox1
             // 

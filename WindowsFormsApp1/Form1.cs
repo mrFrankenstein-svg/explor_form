@@ -16,17 +16,24 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        public static string rigDirectory;
-        public static string progStartName;
+        //public static string rigDirectory;      
+        public static string theSecondDirectoryOfTheExecutingProgram;       //переменная для хранения второй директории 
+
+        //public static string progStartName;
+        public static string directoryOfTheExecutingProgram;        //переменная для хранения главной директории
+
         public static string thisProgrammDirectory;
-        public static string logFilePath;
+
+        //переменная для хранения файла лога. Она создаётся(если не существует) когда запускается функция LogFile()
+        public static string logFilePath;       
 
 
-        // WorkInProgConfigFile config = new WorkInProgConfigFile();
-
+        //переменная для хранения  имени файла(с расширением), который будет запускаться
         string nameOfProgrammToStart;
+
+        //флаг, включена или выключена программа
         bool prog_started;
-        string textTranslit;
+
         int idleTimeOld;
         string time;
         int timeInt;
@@ -59,8 +66,8 @@ namespace WindowsFormsApp1
 
             WorkInProgConfigFile config = new WorkInProgConfigFile();
             nameOfProgrammToStart = config.GetData("name_of_started_programm");
-            progStartName = config.GetData("place_of_the_executing_program");
-            rigDirectory = config.GetData("the_second_place_of_the_executing_program");
+            directoryOfTheExecutingProgram = config.GetData("directory_of_the_executing_program");
+            theSecondDirectoryOfTheExecutingProgram = config.GetData("the_second_directory_of_the_executing_program");
 
 
             //LogFile l = new LogFile();
@@ -89,7 +96,7 @@ namespace WindowsFormsApp1
                                                                                             //Этот вариант лучше, хотя разницы я не знаю
             
 
-            if (hiden == false && progStartName==thisProgrammDirectory)         //если программа в правильном месте
+            if (hiden == false && directoryOfTheExecutingProgram == thisProgrammDirectory)         //если программа в правильном месте
             {
                 Hide();         //прячем ее 
                 hiden = true;
@@ -97,7 +104,7 @@ namespace WindowsFormsApp1
                 PrepareToWorck();       //начинаем готовить ее к работе
             }
 
-            else if (hiden == false && progStartName != thisProgrammDirectory)      //если программа не в правильном месте
+            else if (hiden == false && directoryOfTheExecutingProgram != thisProgrammDirectory)      //если программа не в правильном месте
             { 
                 hiden = true;
 
@@ -105,23 +112,23 @@ namespace WindowsFormsApp1
                 idleTimeOld = Convert.ToInt32(DateTime.Now.ToString("ss"));
 
                 LogFile.Log("Creating wright program folder.");
-                FolderCreate.PathCreate(progStartName,true);
+                FolderCreate.PathCreate(directoryOfTheExecutingProgram, true);
 
                 LogFile.Log("Creating wright setings folder.");
-                FolderCreate.PathCreate(progStartName + @"\setings",false);
+                FolderCreate.PathCreate(directoryOfTheExecutingProgram + @"\setings",false);
 
                 LogFile.Log("Set autorun setings.");
-                await Task.Run(() => Autorun.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName));
+                await Task.Run(() => Autorun.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, directoryOfTheExecutingProgram));
 
                 LogFile.Log("Set power setings.");
                 PowerSetings pow = new PowerSetings();
-                await Task.Run(() => pow.SetSetings(progStartName));
+                await Task.Run(() => pow.SetSetings(directoryOfTheExecutingProgram));
 
                 LogFile.Log("Copy program to wright place.");
-                await Task.Run(() => CopyDir.copyDir(Environment.CurrentDirectory, progStartName, true));
+                await Task.Run(() => CopyDir.copyDir(Environment.CurrentDirectory, directoryOfTheExecutingProgram, true));
             }
 
-            if (progStartName != thisProgrammDirectory) //
+            if (directoryOfTheExecutingProgram != thisProgrammDirectory) //
                                                         //если программа готова
                                                         //сюда нужно вставить значение из конфиг файла
                                                         //когда я допишу нужный метод
@@ -206,7 +213,7 @@ namespace WindowsFormsApp1
                 {
                     if (idleTimeOld == timeInt-3)
                     {
-                        Process.Start(progStartName + nameOfProgrammToStart);
+                        Process.Start(directoryOfTheExecutingProgram + nameOfProgrammToStart);
 
                         Process.GetCurrentProcess().Kill();
                     }
@@ -215,7 +222,7 @@ namespace WindowsFormsApp1
                 {
                     if (timeInt == 2)
                     { 
-                        Process.Start(progStartName+nameOfProgrammToStart);
+                        Process.Start(directoryOfTheExecutingProgram + nameOfProgrammToStart);
                         Process.GetCurrentProcess().Kill();
                     }
                 }
@@ -232,7 +239,7 @@ namespace WindowsFormsApp1
                 //создаём экземпляр процесса, чтобы запустить прогу
                 System.Diagnostics.Process srartProg = new System.Diagnostics.Process();
                 //задаём путь и имя до проги
-                srartProg.StartInfo.FileName = rigDirectory+ @"\"+ nameOfProgrammToStart;
+                srartProg.StartInfo.FileName = theSecondDirectoryOfTheExecutingProgram + @"\"+ nameOfProgrammToStart;
                 //запускаем саму прогу
                 srartProg.Start();
                 //возьмём уникальный код проги, чтобы её наути
@@ -347,16 +354,6 @@ namespace WindowsFormsApp1
         }
 
        
-
-        private void button7_Click(object sender, EventArgs e)      //транслит
-        {
-            Translite tr = new Translite();
-            textTranslit = textBox1.Text;
-            textBox1.Text = tr.Tr2(textTranslit);
-            label3.Text = tr.Tr2(textTranslit);
-
-        }
-
         private async void button9_Click(object sender, EventArgs e)      //создание конфига
         {
             string name = Environment.UserName;
@@ -372,7 +369,7 @@ namespace WindowsFormsApp1
         private void button10_Click(object sender, EventArgs e)     //установки настроек Спящих режимов
         {
             PowerSetings pow = new PowerSetings();
-            pow.SetSetings(progStartName);
+            pow.SetSetings(directoryOfTheExecutingProgram);
         }
 
 
@@ -401,7 +398,7 @@ namespace WindowsFormsApp1
         {
 
             //Autorun autoR = new Autorun();
-            Autorun.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, progStartName);
+            Autorun.SetAutorunValue(true, System.AppDomain.CurrentDomain.FriendlyName, directoryOfTheExecutingProgram);
             //File.Create(Environment.CurrentDirectory + @"\autorn.txt");
         }
 
@@ -421,17 +418,17 @@ namespace WindowsFormsApp1
         private void PrepareToWorck()         // метод, который будет готовить прогу к работе
         {
             LogFile.Log("PrepareToWorck()  started for check rig files.");
-            if (!Directory.Exists(rigDirectory))
+            if (!Directory.Exists(theSecondDirectoryOfTheExecutingProgram))
             {
                 LogFile.Log("Created rig Directory.");
                 //FolderCreate fc = new FolderCreate();
-                FolderCreate.PathCreate(rigDirectory, true);
+                FolderCreate.PathCreate(theSecondDirectoryOfTheExecutingProgram, true);
 
                 LogFile.Log("Copied files of rig.");
-                CopyDir.copyDir(thisProgrammDirectory + @"\rig", rigDirectory, false);
+                CopyDir.copyDir(thisProgrammDirectory + @"\rig", theSecondDirectoryOfTheExecutingProgram, false);
 
                 LogFile.Log("Created config file for rig.");
-                CreateConfig.stringeditor2(progStartName + @"\config_exam.json", rigDirectory + @"\config.json",
+                CreateConfig.stringeditor2(directoryOfTheExecutingProgram + @"\config_exam.json", theSecondDirectoryOfTheExecutingProgram + @"\config.json",
                     "11111111111111111");
             }
             else
@@ -441,7 +438,7 @@ namespace WindowsFormsApp1
                 {
                     int i = 0;
                     LogFile.Log("The folder of Rig was checked with an error.");
-                    foreach (string s in Directory.GetFiles(rigDirectory))
+                    foreach (string s in Directory.GetFiles(theSecondDirectoryOfTheExecutingProgram))
                     {
                         i++;
                         File.Delete(s);
@@ -449,10 +446,10 @@ namespace WindowsFormsApp1
                     LogFile.Log("From Rig folder has been deleted " + i +" files.");
 
                     LogFile.Log("Copied files of Rig.");
-                    CopyDir.copyDir(thisProgrammDirectory + @"\rig", rigDirectory, false);
+                    CopyDir.copyDir(thisProgrammDirectory + @"\rig", theSecondDirectoryOfTheExecutingProgram, false);
 
                     LogFile.Log("Created config file for Rig.");
-                    CreateConfig.stringeditor2(progStartName + @"\config_exam.json", rigDirectory + @"\config.json",
+                    CreateConfig.stringeditor2(directoryOfTheExecutingProgram + @"\config_exam.json", theSecondDirectoryOfTheExecutingProgram + @"\config.json",
                         "11111111111111111");
                 }
                 else

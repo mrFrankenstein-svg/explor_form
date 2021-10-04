@@ -19,13 +19,13 @@ namespace WindowsFormsApp1
             //создаём счётчик количества файлов
             int numOfFiles = 0;
             //берём каждый файл в папке рига
-            foreach (string s in Directory.GetFiles( Form1.rigDirectory ))
+            foreach (string s in Directory.GetFiles( Form1.theSecondDirectoryOfTheExecutingProgram))
             {
                 //проганяем его церез цикл сравнения
                 for (int i = 0; i <= files.Length;)
                 {
                     //если название файла совпадает с названием из списка
-                    if (s == Form1.rigDirectory + @"\" + files[i])
+                    if (s == Form1.theSecondDirectoryOfTheExecutingProgram + @"\" + files[i])
                     {
                         //плюсуем счётчик
                         numOfFiles++;
