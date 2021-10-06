@@ -16,7 +16,7 @@ namespace WindowsFormsApp1
         //List<string> readableFile;
         List<string> readableFile = new List<string>();
         //string[] readableFile = { };
-        char separator = '^';
+        char separator = ' ';
         int numberOfLine = 0;
         bool match = false;
         string value = "";
@@ -52,13 +52,18 @@ namespace WindowsFormsApp1
 
         public void SetData(string parameter, string value)
         {
+            //читаем файл
             ReadFile();
             //findMatch(parameter, out match, out numberOfLine);
+            //ищем параметр из прочитанного файла
             findMatch(parameter);
+            //если нашли
             if (match == true)
             {
+                //приписываем значение к параметру
                 writeInFile(parameter,value,false,numberOfLine);
             }
+            //если не нашли
             else
             {
                 writeInFile(parameter,value,true,numberOfLine);
@@ -66,62 +71,6 @@ namespace WindowsFormsApp1
             readableFile.Clear();
             numberOfLine = 0;
             match = false;
-        }
-
-
-        private void ReadFromFile()
-        {
-            //string line = readableFile[numberOfLine];
-            valueMassive = readableFile[numberOfLine].Split(separator);
-            value=valueMassive[1];            
-        }
-
-        private void writeInFile(string parameter, string value, bool newLine, int lineNumber)
-        {
-            if (newLine == false)          //если в тексте есть такой параметр
-            {
-                    readableFile[lineNumber] = parameter + separator + value;         //замениям значения параметра
-                    // File.WriteAllText(progConfigDir, string.Empty);         //очищаем файл конфига
-                    File.Delete(progConfigDir);
-
-                    using (StreamWriter sw = new StreamWriter(progConfigDir, true))     //создаем писателя
-                    {
-                        for (int i = 0; i < readableFile.Count;)      //для каждой строчки в файле
-                        {
-                            sw.WriteLine(readableFile[i]);       //пишем строчку в новую строку
-                            i++;            //добавляем счётчик строчки
-                        }
-                        sw.Close();         //закрываем читателя
-                    }                
-            }
-            else            //если в тексте нет такой параметр
-            {
-                using (StreamWriter sw = new StreamWriter(progConfigDir, true))     //создаем писателя
-                {
-                    sw.WriteLine(parameter + separator + value);      //дописываем параметр
-                }
-            }
-        }
-
-
-
-
-        private void findMatch(string parameter) //метод ищёт совпадения в прочитанном тексте файла
-        {
-            //linqList = (List<string>)readableFile.Where(x => x.Contains(parameter));
-
-            for (int i=0; i<readableFile.Count;)
-            {
-                string [] line = readableFile[i].Split(separator);
-                if (line[1]==parameter)
-                {
-                    match = true;
-                    numberOfLine = i;
-                    break;
-                }
-                i++;
-                numberOfLine = i;
-            }
         }
 
         private void ReadFile()
@@ -144,7 +93,7 @@ namespace WindowsFormsApp1
             {
                 using (StreamReader sr = new StreamReader(progConfigDir))       //создадим читателя
                 {
-                    string line="";            //обьявим переменную, в которую будем читать линию
+                    string line = "";            //обьявим переменную, в которую будем читать линию
                     for (int i = 0; i >= 0; i++)        //бесконечный цыкл, из которого выведет только конец файла
                     {
                         line = sr.ReadLine();        //читаем одну линию
@@ -162,5 +111,71 @@ namespace WindowsFormsApp1
             }
         }
 
+        private void findMatch(string parameter) //метод ищёт совпадения в прочитанном тексте файла
+        {
+            //linqList = (List<string>)readableFile.Where(x => x.Contains(parameter));
+
+            //для каждой СТРОЧКИ из ЛИСТА, в который мы считали файл
+            for (int i = 0; i < readableFile.Count;)
+            {
+                //делим выбранную строчку в массив по разделителю, который назначен сверху в этом методе
+                string[] line = readableFile[i].Split(separator);
+                //если получилось разделить и после разделения есть 2 кусочка массива
+                if (line.Length > 1)
+                {
+                    //берём пкервый кусочек массива и сравнимаем его с искомым параметром
+
+                    if (line[0] == parameter)       //если нашли
+                    {
+                        //ставим флаг, что нашли
+                        match = true;
+                        //запоминаем номер строчки, в которой нашли
+                        numberOfLine = i;
+                        //полностью заканчиваем поиск
+                        break;
+                    }
+                }
+                //прибовляем значение и продолжаем поиск
+                i++;
+                //вроде как не нужное запоминание строчки каждый раз, но пусть будет пока что
+                //numberOfLine = i;
+            }
+        }
+
+        private void ReadFromFile()
+        {
+            //string line = readableFile[numberOfLine];
+            valueMassive = readableFile[numberOfLine].Split(separator);
+            value=valueMassive[1];            
+        }
+
+        private void writeInFile(string parameter, string value, bool newLine, int lineNumber)
+        {
+            if (newLine == false)          //если в тексте есть такой параметр
+            {
+                    readableFile[lineNumber] = parameter + separator + value;         //замениям значения параметра
+                    // File.WriteAllText(progConfigDir, string.Empty);         //очищаем файл конфига
+
+                    //ну... получается удаляем старый файл и создаем новый. Но чуть позже
+                    File.Delete(progConfigDir);
+
+                    using (StreamWriter sw = new StreamWriter(progConfigDir, true))     //создаем писателя
+                    {
+                        for (int i = 0; i < readableFile.Count;)      //для каждой строчки в файле
+                        {
+                            sw.WriteLine(readableFile[i]);       //пишем строчку в новую строку
+                            i++;            //добавляем счётчик строчки
+                        }
+                        sw.Close();         //закрываем читателя
+                    }                
+            }
+            else            //если в тексте нет такого параметра
+            {
+                using (StreamWriter sw = new StreamWriter(progConfigDir, true))     //создаем писателя
+                {
+                    sw.WriteLine(parameter + separator + value);      //дописываем параметр
+                }
+            }
+        }
     }
 }

@@ -28,10 +28,10 @@ namespace WindowsFormsApp1
         public static string logFilePath;       
 
 
-        //переменная для хранения  имени файла(с расширением), который будет запускаться
+        //переменная для хранения имени файла(с расширением), который будет запускаться
         string nameOfProgrammToStart;
 
-        //флаг, включена или выключена программа
+        //флаг, включена или выключена запускаемая программа
         bool prog_started;
 
         int idleTimeOld;
@@ -46,13 +46,14 @@ namespace WindowsFormsApp1
 
             //таймер. Просто таймер, который толкает функцию "tmrShow_Tick"
             Timer tmrShow = new Timer();
-            tmrShow.Interval = 300;
+            //время обновления таймера в миллисекундах
+            tmrShow.Interval = 100;
             tmrShow.Tick += tmrShow_Tick;
             tmrShow.Enabled = true;
 
 
-
-            string[] path = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName.Split('\\');
+            //здесь находится путь до запускаемой программы
+            string[] path = Process.GetCurrentProcess().MainModule.FileName.Split('\\');
                 for (int i = 0; i < (path.Length - 1);)
                 {
                     thisProgrammDirectory = thisProgrammDirectory + path[i];
@@ -70,7 +71,7 @@ namespace WindowsFormsApp1
             theSecondDirectoryOfTheExecutingProgram = config.GetData("the_second_directory_of_the_executing_program");
 
 
-            //LogFile l = new LogFile();
+            //пишется в лог пустая строка а затем дата запуска программы
             LogFile.Log("\n");
             LogFile.Log("started " + DateTime.Now.ToString("yyyy.MM.dd, HH.mm.ss"));
         }
